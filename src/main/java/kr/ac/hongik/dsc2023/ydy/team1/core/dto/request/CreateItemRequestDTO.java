@@ -8,5 +8,9 @@ import lombok.Getter;
 
 @Getter
 class CreateItemRequestDTO {
-
+    private String name;
+    private String image;
+    private int price;
+    private Brand brand;
+    private Promotion promotion;
 }
