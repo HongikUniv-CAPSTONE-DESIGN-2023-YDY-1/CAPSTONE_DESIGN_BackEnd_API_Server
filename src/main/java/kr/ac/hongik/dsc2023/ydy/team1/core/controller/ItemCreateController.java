@@ -1,6 +1,6 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.controller;
 
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.CreateItemRequestDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.ItemCreateRequestDTO;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.ItemCreateResponseDTO;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.ResponseWrapper;
 import org.springframework.http.ResponseEntity;
@@ -9,5 +9,5 @@ import org.springframework.http.ResponseEntity;
  * Item 생성 API를 정의한 Controller 인터페이스
  */
 public interface ItemCreateController {
-    ResponseWrapper<ResponseEntity<ItemCreateResponseDTO>> create(CreateItemRequestDTO requestDTO);
+    ResponseWrapper<ResponseEntity<ItemCreateResponseDTO>> create(ItemCreateRequestDTO requestDTO);
 }

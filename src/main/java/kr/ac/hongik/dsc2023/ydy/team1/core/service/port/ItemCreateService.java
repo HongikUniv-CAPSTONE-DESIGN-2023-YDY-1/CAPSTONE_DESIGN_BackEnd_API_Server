@@ -1,6 +1,6 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.service.port;
 
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.CreateMultipleItemsRequestDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.ItemsCreateRequestDTO;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.ItemCreateResponseDTO;
 
 /**
@@ -11,5 +11,5 @@ public interface ItemCreateService {
      * 상품을 생성한다.
      * @param requestDTO 상품 생성 요청 DTO
      */
-    ItemCreateResponseDTO create(CreateMultipleItemsRequestDTO requestDTO);
+    ItemCreateResponseDTO create(ItemsCreateRequestDTO requestDTO);
 }
