@@ -1,4 +1,4 @@
-package kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.impl;
+package kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.port;
 
 import lombok.Builder;
 import lombok.Getter;
