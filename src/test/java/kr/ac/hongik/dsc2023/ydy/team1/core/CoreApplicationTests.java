@@ -15,4 +15,15 @@ class CoreApplicationTests {
 				.strength(SearchStrength.STRONG).build();
 		System.out.println(konbiniSearchItemRequestDTO);
 	}
+	@Test
+	void createItemDTOTest(){
+		KonbiniItemCreateRequestDTO dto = KonbiniItemCreateRequestDTO.builder()
+				.name("꼬갈콘")
+				.brand(KonbiniBrand.CU)
+				.promotion(KonbiniPromotion.ONE_PLUS_ONE)
+				.pricePerUnit(1)
+				.picture(null)
+				.build();
+		System.out.println(dto);
+	}
 }
