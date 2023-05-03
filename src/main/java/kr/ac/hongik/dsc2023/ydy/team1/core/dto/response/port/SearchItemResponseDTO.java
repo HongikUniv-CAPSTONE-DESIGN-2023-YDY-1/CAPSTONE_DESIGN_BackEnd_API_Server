@@ -1,4 +1,4 @@
-package kr.ac.hongik.dsc2023.ydy.team1.core.dto.response;
+package kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.port;
 
 import lombok.Getter;
 

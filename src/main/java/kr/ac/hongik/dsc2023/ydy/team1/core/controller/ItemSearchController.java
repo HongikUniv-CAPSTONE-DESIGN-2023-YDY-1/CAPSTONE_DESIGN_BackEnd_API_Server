@@ -1,8 +1,8 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.controller;
 
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.port.SearchItemRequestDTO;
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.ResponseWrapper;
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.SearchItemResponseDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.port.ResponseWrapper;
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.port.SearchItemResponseDTO;
 import org.springframework.http.ResponseEntity;
 
 /**
