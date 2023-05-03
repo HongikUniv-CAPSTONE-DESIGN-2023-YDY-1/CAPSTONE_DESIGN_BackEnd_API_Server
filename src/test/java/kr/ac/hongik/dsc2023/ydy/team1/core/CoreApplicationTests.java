@@ -1,5 +1,7 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core;
 
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.impl.SearchStrength;
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.konbini.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -7,7 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 class CoreApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void searchDTOTest(){
+		KonbiniSearchItemRequestDTO konbiniSearchItemRequestDTO = KonbiniSearchItemRequestDTO.builder()
+				.name("꼬깔콘")
+				.strength(SearchStrength.STRONG).build();
+		System.out.println(konbiniSearchItemRequestDTO);
 	}
-
 }
