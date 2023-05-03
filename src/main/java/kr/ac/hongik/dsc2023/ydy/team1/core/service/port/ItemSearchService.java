@@ -1,6 +1,6 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.service.port;
 
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.SearchItemRequestDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.impl.SearchItemRequestDTO;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.SearchItemResponseDTO;
 
 /**

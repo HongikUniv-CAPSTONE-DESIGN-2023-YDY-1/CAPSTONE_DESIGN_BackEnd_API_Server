@@ -1,6 +1,6 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.controller;
 
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.ItemsCreateRequestDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.impl.ItemsCreateRequestDTO;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.ItemCreateResponseDTO;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.ResponseWrapper;
 import org.springframework.http.ResponseEntity;
