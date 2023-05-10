@@ -1,7 +1,7 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.service.port;
 
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.ItemsCreateRequestDTO;
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.ItemCreateResponseDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.port.ItemsCreateRequestDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.port.ItemCreateResponseDTO;
 
 /**
  * 상품 생성 기능을 정의하는 Service 인터페이스

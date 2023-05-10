@@ -1,7 +1,7 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.service.port;
 
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.SearchItemRequestDTO;
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.SearchItemResponseDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.port.SearchItemRequestDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.port.SearchItemResponseDTO;
 
 /**
  * Item 검색기능을 정의하는 Service 인터페이스.
