@@ -1,8 +1,11 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core;
 
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.port.ItemsCreateRequestDTO;
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.port.SearchStrength;
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.konbini.*;
+import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.request.ItemsCreateRequestDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.request.SearchStrength;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.KonbiniItemCreateRequestDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.KonbiniSearchItemRequestDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniBrand;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniPromotion;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
