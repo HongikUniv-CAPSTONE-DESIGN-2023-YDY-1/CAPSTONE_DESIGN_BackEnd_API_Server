@@ -2,7 +2,10 @@ package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity;
 
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniBrand;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniPromotion;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -10,13 +13,14 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "promotion_info")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PromotionInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
@@ -33,4 +37,18 @@ public class PromotionInfo {
 
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
+
+    @Column(name = "price", nullable = false)
+    private int price;
+
+    @Builder
+    private PromotionInfo(Long id, Item item, KonbiniBrand brand, KonbiniPromotion promotion, LocalDate startDate, LocalDate endDate, int price) {
+        this.id = id;
+        this.item = item;
+        this.brand = brand;
+        this.promotion = promotion;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.price = price;
+    }
 }
