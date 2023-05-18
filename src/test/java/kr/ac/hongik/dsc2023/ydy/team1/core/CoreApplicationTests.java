@@ -2,11 +2,14 @@ package kr.ac.hongik.dsc2023.ydy.team1.core;
 
 import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.request.ItemsCreateRequestDTO;
 import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.request.SearchStrength;
+import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.service.ItemSearchService;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.KonbiniItemCreateRequestDTO;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.KonbiniSearchItemRequestDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.KonbiniSearchItem;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniBrand;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniPromotion;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -14,6 +17,8 @@ import java.util.List;
 
 @SpringBootTest
 class CoreApplicationTests {
+	@Autowired
+	private ItemSearchService<KonbiniSearchItem,KonbiniSearchItemRequestDTO> itemSearchService;
 
 	@Test
 	void searchDTOTest(){
@@ -48,5 +53,13 @@ class CoreApplicationTests {
 				.itemList(list)
 				.build();
 		System.out.println(requestDTO);
+	}
+	@Test
+	void tt(){
+		var list = itemSearchService.search(KonbiniSearchItemRequestDTO.builder()
+				.name("꼬깔콘").build());
+		for (KonbiniSearchItem searchItem : list.getSearchItems()) {
+			System.out.println(searchItem.getName());
+		}
 	}
 }
