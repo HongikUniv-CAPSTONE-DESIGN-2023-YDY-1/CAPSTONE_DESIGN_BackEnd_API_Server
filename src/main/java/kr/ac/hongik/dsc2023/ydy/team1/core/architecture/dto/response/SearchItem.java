@@ -1,6 +1,7 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.response;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -8,6 +9,7 @@ import lombok.experimental.SuperBuilder;
  */
 @SuperBuilder
 @Getter
+@NoArgsConstructor
 public abstract class SearchItem {
     protected String name;
 }
