@@ -1,5 +1,6 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.request;
 
+import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
@@ -8,6 +9,7 @@ import lombok.experimental.SuperBuilder;
  */
 @SuperBuilder
 @ToString
+@Getter
 public abstract class SearchItemRequestDTO {
     protected String name;
     protected SearchStrength strength;
