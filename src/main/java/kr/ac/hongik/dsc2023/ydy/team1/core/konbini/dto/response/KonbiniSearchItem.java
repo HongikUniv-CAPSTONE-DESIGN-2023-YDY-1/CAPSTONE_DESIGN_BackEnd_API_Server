@@ -5,12 +5,14 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniBrand;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniPromotion;
 import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.response.SearchItem;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import static kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniPromotion.ONE_PLUS_ONE;
 
 @SuperBuilder
 @Getter
+@ToString(callSuper = true)
 public class KonbiniSearchItem extends SearchItem {
    private KonbiniBrand brand;
    private KonbiniPromotion promotion;
