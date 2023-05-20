@@ -66,13 +66,13 @@ class CoreApplicationTests {
 		System.out.println(requestDTO);
 	}
 	@Test
-	void tt(){
+	void searchItemTest(){
 		var list = itemSearchService.search(KonbiniSearchItemRequestDTO.builder()
 				.name("꼬깔콘").build());
 		list.getSearchItems().forEach(System.out::println);
 	}
 	@Test
-	void create() throws IOException {
+	void createItemTest() throws IOException {
 		List<KonbiniItemCreateRequestDTO> list = new ArrayList<>();
 		KonbiniItemCreateRequestDTO konbiniItemCreateRequestDTO =
 				KonbiniItemCreateRequestDTO.builder()
