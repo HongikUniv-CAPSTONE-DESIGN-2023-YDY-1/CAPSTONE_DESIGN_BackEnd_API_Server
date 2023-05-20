@@ -7,9 +7,6 @@ import java.util.List;
 
 @SuperBuilder
 @Getter
-/**
- * Item 검색 결과를 표현하는 추상 클래스
- */
-public abstract class SearchItemResponseDTO {
-    protected List<SearchItem> searchItems;
+public abstract class SearchItemResponseDTO<T extends SearchItem> {
+    protected List<T> searchItems;
 }
