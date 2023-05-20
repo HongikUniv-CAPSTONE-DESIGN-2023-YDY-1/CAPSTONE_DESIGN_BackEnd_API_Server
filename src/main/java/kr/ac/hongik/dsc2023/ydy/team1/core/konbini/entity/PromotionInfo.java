@@ -1,5 +1,6 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity;
 
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.KonbiniItemCreateRequestDTO;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniBrand;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniPromotion;
 import lombok.AccessLevel;
@@ -50,5 +51,11 @@ public class PromotionInfo {
         this.startDate = startDate;
         this.endDate = endDate;
         this.price = price;
+    }
+    public void update(KonbiniItemCreateRequestDTO dto){
+        promotion = dto.getPromotion();
+        startDate = LocalDate.now();
+        endDate = LocalDate.now();
+        price = dto.getPricePerUnit();
     }
 }
