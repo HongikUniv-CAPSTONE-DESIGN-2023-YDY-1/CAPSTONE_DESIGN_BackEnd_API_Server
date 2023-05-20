@@ -17,6 +17,8 @@ public class Item {
 
     @Column(name = "name", nullable = false)
     private String name;
+    @Column(name = "img_url", nullable = false)
+    private String imgUrl;
 
     public Item(String name) {
         this.name = name;
