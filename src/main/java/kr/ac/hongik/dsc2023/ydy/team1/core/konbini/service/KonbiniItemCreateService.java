@@ -33,7 +33,7 @@ public class KonbiniItemCreateService<E extends KonbiniItemCreateRequestDTO, T e
     }
 
     @Override
-    public ItemCreateResponseDTO create(T requestDTO) {
+    public ItemCreateResponseDTO<E> create(T requestDTO) {
         List<E> lists = requestDTO.getItemList();
         List<PromotionInfo> promotionInfos = new ArrayList<>();
         List<E> failList = new ArrayList<>();
@@ -54,7 +54,7 @@ public class KonbiniItemCreateService<E extends KonbiniItemCreateRequestDTO, T e
             promotionInfos.add(promotionInfo);
         }
         promotionInfoRepository.saveAll(promotionInfos);
-        return new KonbiniItemCreateResponseDTO<>(failList);
+        return new KonbiniItemCreateResponseDTO<E>(failList);
     }
     private String makeImageName(E createDto){
         String name = createDto.getName();
@@ -64,7 +64,7 @@ public class KonbiniItemCreateService<E extends KonbiniItemCreateRequestDTO, T e
         try {
             MultipartFile imgFile = createDto.getPicture();
             String imgName = makeImageName(createDto);
-            File dest = new File(IMG_PATH + File.pathSeparator + imgName + "." + getFileExtension(imgFile));
+            File dest = new File(IMG_PATH + File.separator + imgName + "." + getFileExtension(imgFile));
             imgFile.transferTo(dest);
         }catch (Exception e){
             failList.add(createDto);
