@@ -1,5 +1,6 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.request;
 
+import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @SuperBuilder
 @ToString
+@Getter
 public abstract class ItemCreateRequestDTO {
     protected String name;
     protected MultipartFile picture;
