@@ -20,7 +20,8 @@ public class Item {
     @Column(name = "img_url", nullable = false)
     private String imgUrl;
 
-    public Item(String name) {
+    public Item(String name,String imgUrl) {
         this.name = name;
+        this.imgUrl = imgUrl;
     }
 }
