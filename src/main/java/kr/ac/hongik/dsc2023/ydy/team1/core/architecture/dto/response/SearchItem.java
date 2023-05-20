@@ -12,4 +12,5 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public abstract class SearchItem {
     protected String name;
+    protected String imgUrl;
 }

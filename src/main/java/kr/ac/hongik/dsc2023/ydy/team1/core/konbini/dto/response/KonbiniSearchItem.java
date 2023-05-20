@@ -24,5 +24,6 @@ public class KonbiniSearchItem extends SearchItem {
       if (promotion == ONE_PLUS_ONE) pricePerGroup = pricePerUnit;
       else pricePerGroup = 2 * pricePerUnit;
       name = promotionInfo.getItem().getName();
+      imgUrl = promotionInfo.getItem().getImgUrl();
    }
 }
