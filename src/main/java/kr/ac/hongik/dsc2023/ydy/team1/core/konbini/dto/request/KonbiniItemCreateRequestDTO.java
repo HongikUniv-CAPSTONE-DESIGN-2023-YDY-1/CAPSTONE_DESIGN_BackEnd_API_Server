@@ -6,17 +6,17 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.PromotionInfo;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniBrand;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniPromotion;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
 @Getter
 @ToString(callSuper = true)
-@SuperBuilder
+@Setter
+@NoArgsConstructor
 public class KonbiniItemCreateRequestDTO extends ItemCreateRequestDTO {
-    private final KonbiniBrand brand;
-    private final KonbiniPromotion promotion;
-    private final int pricePerUnit;
+    private KonbiniBrand brand;
+    private KonbiniPromotion promotion;
+    private int pricePerUnit;
 
     public PromotionInfo toPromotionInfo(Item item){
         return PromotionInfo.builder()
