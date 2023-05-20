@@ -39,3 +39,4 @@ out/
 ###security###
 application-dev.yml
 application_log
+*.gz
