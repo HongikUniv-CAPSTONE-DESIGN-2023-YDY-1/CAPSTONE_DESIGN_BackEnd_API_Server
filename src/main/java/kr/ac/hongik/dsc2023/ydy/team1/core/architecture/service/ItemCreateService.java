@@ -13,5 +13,5 @@ public interface ItemCreateService<E extends ItemCreateRequestDTO,T extends Item
      * @param requestDTO 상품 생성 요청 DTO
      * @return 상품 생성 응답 DTO
      */
-    ItemCreateResponseDTO create(T requestDTO);
+    ItemCreateResponseDTO<E> create(T requestDTO);
 }
