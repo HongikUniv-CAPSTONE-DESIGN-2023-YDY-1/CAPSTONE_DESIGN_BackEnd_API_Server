@@ -38,5 +38,6 @@ out/
 
 ###security###
 application-dev.yml
+application-pub.yml
 application_log
 *.gz
