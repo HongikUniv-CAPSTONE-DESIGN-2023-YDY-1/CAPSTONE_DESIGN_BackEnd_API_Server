@@ -10,6 +10,7 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.PromotionInfo;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.KonbiniPromotionInfoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +21,25 @@ public class KonbiniItemSearchService<E extends SearchItem,T extends SearchItemR
     private KonbiniPromotionInfoRepository promotionInfoRepository;
     @Override
     public SearchItemResponseDTO<E> search(T requestDTO) {
-        List<PromotionInfo> promotionInfos = promotionInfoRepository.findAllByItem_NameContains(requestDTO.getName());
+        String itemName = requestDTO.getName();
+        return searchFromRepository(itemName);
+    }
+    private KonbiniSearchItemResponseDTO<E> searchFromRepository(String itemName){
+        List<PromotionInfo> promotionInfos = promotionInfoRepository.findAllByItem_NameContains(itemName);
         List<E> searchItems = new ArrayList<>();
         for (PromotionInfo promotionInfo : promotionInfos) {
             E konbiniSearchItem = (E) new KonbiniSearchItem(promotionInfo);
             searchItems.add(konbiniSearchItem);
         }
         return KonbiniSearchItemResponseDTO.<E>builder().searchItems(searchItems).build();
+    }
+
+    @Override
+    public SearchItemResponseDTO<E> searchByImage(MultipartFile img) {
+        String itemName = requestToAIModule(img);
+        return searchFromRepository(itemName);
+    }
+    private String requestToAIModule(MultipartFile img){
+        return "";
     }
 }
