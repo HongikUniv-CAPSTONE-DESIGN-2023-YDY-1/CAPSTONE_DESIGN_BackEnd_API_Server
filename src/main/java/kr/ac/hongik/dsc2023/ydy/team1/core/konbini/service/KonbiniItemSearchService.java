@@ -11,8 +11,8 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.KonbiniSearchIte
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.KonbiniSearchItemResponseDTO;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.PromotionInfo;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.KonbiniPromotionInfoRepository;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -25,9 +25,15 @@ import java.util.List;
 import java.util.Map;
 @Slf4j
 @Service
-@AllArgsConstructor
 public class KonbiniItemSearchService<E extends SearchItem,T extends SearchItemRequestDTO> implements ItemSearchService<E,T> {
+    @Value("${ai.server-path}")
+    private String AI_SERVER_PATH;
     private KonbiniPromotionInfoRepository promotionInfoRepository;
+
+    public KonbiniItemSearchService(KonbiniPromotionInfoRepository promotionInfoRepository) {
+        this.promotionInfoRepository = promotionInfoRepository;
+    }
+
     @Override
     public SearchItemResponseDTO<E> search(T requestDTO) {
         String itemName = requestDTO.getName();
@@ -51,7 +57,7 @@ public class KonbiniItemSearchService<E extends SearchItem,T extends SearchItemR
     private String requestToAIModule(MultipartFile img){
 
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost/hello";
+        String url = AI_SERVER_PATH+"/hello";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf("multipart/form-data;charset=UTF-8"));
