@@ -43,7 +43,7 @@ public class KonbiniItemCreateService<E extends KonbiniItemCreateRequestDTO, T e
             Optional<PromotionInfo> searchResult = promotionInfoRepository.findByItem_NameAndBrand(itemName,brand);
             PromotionInfo promotionInfo;
             if (searchResult.isEmpty()){ // 이 상품이 이 브랜드에서 처음 행사 진행
-                String imgName = makeImageName(createDto);
+                String imgName = makeImageName(createDto) + "." + getFileExtension(createDto.getPicture());
                 Item item = itemRepository.findByName(itemName).orElse(new Item(itemName,imgName)); // 시스템에 상품이 등록되어잇지 않으면 상품 생성.
                 if(!saveImage(createDto,failList)) continue;
                 promotionInfo = createDto.toPromotionInfo(item);
