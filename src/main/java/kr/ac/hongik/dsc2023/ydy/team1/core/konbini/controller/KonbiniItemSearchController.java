@@ -30,7 +30,7 @@ public class KonbiniItemSearchController<RES extends KonbiniSearchItem, REQ exte
         return ResponseEntity.ok(wrapper);
     }
 
-    @GetMapping("/image")
+    @PostMapping("/image")
     @Override
     public ResponseEntity<ResponseWrapper<SearchItemResponseDTO<RES>>> searchByImage(@RequestPart MultipartFile img) {
         var result = itemSearchService.searchByImage(img);
