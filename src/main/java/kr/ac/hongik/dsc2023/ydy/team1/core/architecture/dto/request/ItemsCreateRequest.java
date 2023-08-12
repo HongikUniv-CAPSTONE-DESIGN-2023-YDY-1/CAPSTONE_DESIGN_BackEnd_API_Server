@@ -12,6 +12,6 @@ import java.util.List;
 @Getter
 @Builder
 @ToString
-public class ItemsCreateRequestDTO<T extends ItemCreateRequestDTO> {
+public class ItemsCreateRequest<T extends ItemCreateRequest> {
     private final List<T> itemList;
 }

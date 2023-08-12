@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @NoArgsConstructor
 @Setter
-public abstract class SearchItemRequestDTO {
+public abstract class SearchItemRequest {
     protected String name;
     protected SearchStrength strength;
 }
