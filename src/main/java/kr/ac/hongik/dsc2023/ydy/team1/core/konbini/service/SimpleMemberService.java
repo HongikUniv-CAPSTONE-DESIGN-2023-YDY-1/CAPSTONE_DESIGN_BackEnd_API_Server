@@ -12,6 +12,7 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.util.JWTMaker;
 import kr.ac.hongik.dsc2023.ydy.team1.core.util.SHA256;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,6 +21,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class SimpleMemberService implements MemberService {
     private final MemberRepository memberRepository;
+    @Transactional
     @Override
     public JoinResponse join(JoinRequest joinRequest) {
         validateEmail(joinRequest.getEmail());
@@ -41,6 +43,7 @@ public class SimpleMemberService implements MemberService {
         }
     }
 
+    @Transactional
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
         Member member = validateLoginRequest(loginRequest);
@@ -51,13 +54,16 @@ public class SimpleMemberService implements MemberService {
     private Member validateLoginRequest(LoginRequest loginRequest){
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
+        password = SHA256.hash(password);
         return memberRepository.findByEmailAndPassword(email, password)
                 .orElseThrow(() -> new SecurityException("이메일이나 패스워드가 잘못되었습니다."));
     }
+    @Transactional
     @Override
     public PasswordChangeResponse changePassword(PasswordChangeRequest passwordChangeRequest) {
         String email = passwordChangeRequest.getEmail();
         String password = passwordChangeRequest.getPassword();
+        password = SHA256.hash(password);
         String newPassword = passwordChangeRequest.getNewPassword();
         newPassword = SHA256.hash(newPassword);
         Member member = memberRepository.findByEmailAndPassword(email, password)
