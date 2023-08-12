@@ -3,7 +3,6 @@ package kr.ac.hongik.dsc2023.ydy.team1.core.util;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.Member;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;

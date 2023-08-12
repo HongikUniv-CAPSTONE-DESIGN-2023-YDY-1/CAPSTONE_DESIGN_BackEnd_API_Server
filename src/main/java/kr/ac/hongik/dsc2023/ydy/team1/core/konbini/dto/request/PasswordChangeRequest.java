@@ -1,6 +1,9 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
