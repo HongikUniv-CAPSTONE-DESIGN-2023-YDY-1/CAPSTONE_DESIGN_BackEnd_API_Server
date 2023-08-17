@@ -4,6 +4,7 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.PromotionInfo;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniBrand;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
 

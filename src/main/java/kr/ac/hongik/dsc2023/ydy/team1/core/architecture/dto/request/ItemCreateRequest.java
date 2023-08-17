@@ -2,7 +2,7 @@ package kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.KonbiniItemCreateRequestDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.KonbiniItemCreateRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,9 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
         property = "itemType",
         visible = true)
 @JsonSubTypes({
-        @JsonSubTypes.Type(name = "konbini", value = KonbiniItemCreateRequestDTO.class)
+        @JsonSubTypes.Type(name = "konbini", value = KonbiniItemCreateRequest.class)
 })
-public abstract class ItemCreateRequestDTO {
+public abstract class ItemCreateRequest {
     protected String name;
     protected MultipartFile picture;
 }

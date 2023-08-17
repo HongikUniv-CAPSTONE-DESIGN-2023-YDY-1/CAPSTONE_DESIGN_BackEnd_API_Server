@@ -1,11 +1,14 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request;
 
-import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.request.ItemCreateRequestDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.request.ItemCreateRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.Item;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.PromotionInfo;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniBrand;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniPromotion;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
@@ -13,7 +16,7 @@ import java.time.LocalDate;
 @ToString(callSuper = true)
 @Setter
 @NoArgsConstructor
-public class KonbiniItemCreateRequestDTO extends ItemCreateRequestDTO {
+public class KonbiniItemCreateRequest extends ItemCreateRequest {
     private KonbiniBrand brand;
     private KonbiniPromotion promotion;
     private int pricePerUnit;

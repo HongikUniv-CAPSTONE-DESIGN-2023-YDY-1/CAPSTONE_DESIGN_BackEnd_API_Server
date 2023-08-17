@@ -1,10 +1,10 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service;
 
-import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.request.ItemsCreateRequestDTO;
-import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.response.ItemCreateResponseDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.request.ItemsCreateRequest;
+import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.response.ItemCreateResponse;
 import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.service.ItemCreateService;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.KonbiniItemCreateRequestDTO;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.KonbiniItemCreateResponseDTO;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.KonbiniItemCreateRequest;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.KonbiniItemCreateResponse;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.Item;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.PromotionInfo;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniBrand;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class KonbiniItemCreateService<E extends KonbiniItemCreateRequestDTO, T extends ItemsCreateRequestDTO<E>> implements ItemCreateService<E, T> {
+public class KonbiniItemCreateService<E extends KonbiniItemCreateRequest, T extends ItemsCreateRequest<E>> implements ItemCreateService<E, T> {
     private final KonbiniPromotionInfoRepository promotionInfoRepository;
     private final KonbiniItemRepository itemRepository;
     @Value("${item.img-path}")
@@ -33,7 +33,7 @@ public class KonbiniItemCreateService<E extends KonbiniItemCreateRequestDTO, T e
     }
 
     @Override
-    public ItemCreateResponseDTO<E> create(T requestDTO) {
+    public ItemCreateResponse<E> create(T requestDTO) {
         List<E> lists = requestDTO.getItemList();
         List<PromotionInfo> promotionInfos = new ArrayList<>();
         List<E> failList = new ArrayList<>();
@@ -54,7 +54,7 @@ public class KonbiniItemCreateService<E extends KonbiniItemCreateRequestDTO, T e
             promotionInfos.add(promotionInfo);
         }
         promotionInfoRepository.saveAll(promotionInfos);
-        return new KonbiniItemCreateResponseDTO<E>(failList);
+        return new KonbiniItemCreateResponse<E>(failList);
     }
     private String makeImageName(E createDto){
         String name = createDto.getName();
