@@ -60,7 +60,7 @@ public class SimpleCommentService implements CommentService {
     }
     @Transactional
     @Override
-    public Page<CommentResponse> readAllByUserID(long userId, int page, int sizePerPage) {
+    public Page<CommentResponse> readAllByUserID(int userId, int page, int sizePerPage) {
         return commentRepository.getCommentsByMember_Id(userId,PageRequest.of(page,sizePerPage)).map(CommentResponse::fromEntity);
     }
     @Transactional
