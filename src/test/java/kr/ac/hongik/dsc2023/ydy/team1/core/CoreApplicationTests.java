@@ -7,6 +7,7 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.KonbiniItemCreate
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.LoginRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.PasswordChangeRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.comment.CommentCreateRequest;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.comment.CommentUpdateRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.comment.CommentResponse;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.KonbiniItemRepository;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service.CommentService;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 
 @SpringBootTest
@@ -33,6 +35,8 @@ class CoreApplicationTests {
     CommentService commentService;
     @Autowired
     DataSource dataSource;
+    @Autowired
+    EntityManager entityManager;
     @BeforeEach
     public void before(){
         log.info("__________________________________________________________");
@@ -50,6 +54,7 @@ class CoreApplicationTests {
         }
     }
     @Test
+    @Order(1)
     public void memberServiceTest(){
         memberService.join(JoinRequest.getInstance());
         memberService.login(LoginRequest.getInstance());
@@ -59,13 +64,31 @@ class CoreApplicationTests {
         });
     }
     @Test
+    @Order(2)
     public void commentServiceTest(){
         memberService.join(JoinRequest.getInstance());
-        CommentResponse commentResponse = commentService.create(CommentCreateRequest.getInstance(), 2);
-        Page<CommentResponse> commentResponses = commentService.readAllByPromotionID(commentResponse.getPromotionId(), 0, 10);
-        commentResponses.get()
-                .forEach(c ->log.info(c.getCommentId()+""));
+        CommentResponse created = commentService.create(CommentCreateRequest.getInstance(), 2);
+        CommentResponse searched = commentService.readAllByPromotionID(created.getPromotionId(), 0, 10)
+                .get().findFirst().orElseThrow();
+        Assertions.assertEquals(created.getCommentId(),searched.getCommentId());
+
         Assertions.assertThrows(RuntimeException.class,() -> commentService.create(CommentCreateRequest.getInstance(), 2));
+        Assertions.assertThrows(RuntimeException.class, () -> commentService.update(CommentUpdateRequest.getInstance(),3));
+
+        entityManager.clear();//https://juneyr.dev/hibernate-exception-does-not-flush
+
+        commentService.update(CommentUpdateRequest.getInstance(),2);
+        searched = commentService.readAllByUserID(2,0,10).get().findFirst().get();
+        Assertions.assertEquals(CommentUpdateRequest.getInstance().getContent(),searched.getContent());
+
+        CommentResponse searched2 = commentService.readAllByItemID(1,0,10).get().findFirst().get();
+
+        Assertions.assertEquals(searched.getCommentId(),searched2.getCommentId());
+
+        Assertions.assertThrows(RuntimeException.class,() -> commentService.delete(1,3));
+        commentService.delete(1,2);
+
+        Assertions.assertTrue(commentService.readAllByUserID(2, 0, 10).isEmpty());
 
     }
 }
