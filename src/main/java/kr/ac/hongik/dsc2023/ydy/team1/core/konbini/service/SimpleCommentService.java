@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
@@ -25,12 +26,12 @@ public class SimpleCommentService implements CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final KonbiniPromotionInfoRepository promotionInfoRepository;
-
+    @Transactional
     @Override
     public CommentResponse create(CommentCreateRequest commentCreateRequest, int userID) {
         Comment comment = makeComment(commentCreateRequest, userID);
         validatePromotionIsOnGoing(comment.getPromotionInfo());
-        commentRepository.save(comment);
+        commentRepository.saveAndFlush(comment);
         return CommentResponse.fromEntity(comment);
     }
     private Comment makeComment(CommentCreateRequest request, int userID){
@@ -52,22 +53,22 @@ public class SimpleCommentService implements CommentService {
             throw new IllegalStateException("종료된 행사에는 리뷰를 작성할 수 없습니다.");
         }
     }
-
+    @Transactional
     @Override
     public Page<CommentResponse> readAllByItemID(long itemId, int page, int sizePerPage) {
         return commentRepository.getCommentsByPromotionInfo_Item_Id(itemId, PageRequest.of(page, sizePerPage)).map(CommentResponse::fromEntity);
     }
-
+    @Transactional
     @Override
     public Page<CommentResponse> readAllByUserID(long userId, int page, int sizePerPage) {
         return commentRepository.getCommentsByMember_Id(userId,PageRequest.of(page,sizePerPage)).map(CommentResponse::fromEntity);
     }
-
+    @Transactional
     @Override
     public Page<CommentResponse> readAllByPromotionID(long promotionID, int page, int sizePerPage) {
         return commentRepository.getCommentsByPromotionInfo_Id(promotionID,PageRequest.of(page,sizePerPage)).map(CommentResponse::fromEntity);
     }
-
+    @Transactional
     @Override
     public CommentResponse update(CommentUpdateRequest commentUpdateRequest, int userID) {
         Comment comment = commentRepository.findById(commentUpdateRequest.getCommentId())
@@ -75,7 +76,7 @@ public class SimpleCommentService implements CommentService {
         validateCommentUpdateRequest(comment, userID);
         validatePromotionIsOnGoing(comment.getPromotionInfo());
         comment.update(commentUpdateRequest);
-        commentRepository.save(comment);
+        commentRepository.saveAndFlush(comment);
         return CommentResponse.fromEntity(comment);
     }
     private void validateCommentUpdateRequest(Comment comment, int userID){
@@ -83,6 +84,7 @@ public class SimpleCommentService implements CommentService {
             throw new SecurityException("자신이 작성한 리뷰만 수정할 수 있습니다.");
         }
     }
+    @Transactional
     @Override
     public void delete(long commentID, int userID) {
         Comment comment = commentRepository.findById(commentID).orElseThrow(() -> new NoSuchElementException("없는 리뷰입니다."));
