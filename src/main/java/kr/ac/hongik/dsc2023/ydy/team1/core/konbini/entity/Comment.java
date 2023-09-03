@@ -21,7 +21,7 @@ public class Comment {
     private Member member;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "promotion_id", nullable = false)
+    @JoinColumn(name = "promotion_id", nullable = false, unique = true)
     private PromotionInfo promotionInfo;
 
     @Column(nullable = false)

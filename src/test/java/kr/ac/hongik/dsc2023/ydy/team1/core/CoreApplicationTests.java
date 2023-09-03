@@ -65,8 +65,7 @@ class CoreApplicationTests {
         Page<CommentResponse> commentResponses = commentService.readAllByPromotionID(commentResponse.getPromotionId(), 0, 10);
         commentResponses.get()
                 .forEach(c ->log.info(c.getCommentId()+""));
-        commentResponse = commentService.create(CommentCreateRequest.getInstance(), 2);
-        commentResponses = commentService.readAllByPromotionID(commentResponse.getPromotionId(), 0, 10);
-        Assertions.assertEquals(1,commentResponses.getTotalElements());
+        Assertions.assertThrows(RuntimeException.class,() -> commentService.create(CommentCreateRequest.getInstance(), 2));
+
     }
 }
