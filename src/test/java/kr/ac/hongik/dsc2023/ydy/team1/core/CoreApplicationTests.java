@@ -46,8 +46,8 @@ class CoreApplicationTests {
             jdbcTemplate.update(sql);
             sql = "INSERT INTO `promotion_info` (`id`, `brand_id`, `end_date`, `price`, `promotion_id`, `start_date`, `item_id`) " +
                     "VALUES " +
-                    "(1, 'CU', '2023-09-04', 1700, 'ONE_PLUS_ONE', '2023-09-04', 1)," +
-                    "(2, 'GS25', '2023-09-04', 1000, 'TWO_PLUS_ONE', '2023-09-04', 2)";
+                    "(1, 'CU', '2025-09-09', 1700, 'ONE_PLUS_ONE', '2023-09-04', 1)," +
+                    "(2, 'GS25', '2025-09-09', 1000, 'TWO_PLUS_ONE', '2023-09-04', 2)";
             jdbcTemplate.update(sql);
         }catch (Exception e){
             log.error("errrrrrrrrrrrrrrrrrr");
