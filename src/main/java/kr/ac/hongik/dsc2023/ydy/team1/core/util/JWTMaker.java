@@ -1,8 +1,6 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.util;
 
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -29,7 +27,13 @@ public final class JWTMaker {
                 .setExpiration(Timestamp.valueOf(LocalDateTime.now().plusSeconds(lifeTimeSeconds)))
                 .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
                 .setIssuer("test")
-                .signWith(SignatureAlgorithm.HS256, Base64.getEncoder().encodeToString(secretKey.getBytes()))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+    public static int getUserID(String token){
+        JwtParser jwtParser = Jwts.parser();
+        jwtParser.setSigningKey(secretKey);
+        Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
+        return (Integer) claimsJws.getBody().get("userID");
     }
 }

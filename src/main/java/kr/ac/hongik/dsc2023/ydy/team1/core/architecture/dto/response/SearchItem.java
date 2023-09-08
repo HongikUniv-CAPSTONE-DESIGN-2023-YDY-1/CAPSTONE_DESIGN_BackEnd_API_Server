@@ -13,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @ToString
 public abstract class SearchItem {
+    protected long id;
     protected String name;
     protected String imgUrl;
 }
