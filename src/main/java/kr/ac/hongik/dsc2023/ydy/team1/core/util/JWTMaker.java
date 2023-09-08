@@ -27,14 +27,13 @@ public final class JWTMaker {
                 .setExpiration(Timestamp.valueOf(LocalDateTime.now().plusSeconds(lifeTimeSeconds)))
                 .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
                 .setIssuer("test")
-                .signWith(SignatureAlgorithm.HS256, Base64.getEncoder().encodeToString(secretKey.getBytes()))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
     public static int getUserID(String token){
         JwtParser jwtParser = Jwts.parser();
-        jwtParser.setSigningKey(Base64.getEncoder().encode(secretKey.getBytes()));
+        jwtParser.setSigningKey(secretKey);
         Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
-        String userIDString = (String) claimsJws.getBody().get("userID");
-        return Integer.parseInt(userIDString);
+        return (Integer) claimsJws.getBody().get("userID");
     }
 }
