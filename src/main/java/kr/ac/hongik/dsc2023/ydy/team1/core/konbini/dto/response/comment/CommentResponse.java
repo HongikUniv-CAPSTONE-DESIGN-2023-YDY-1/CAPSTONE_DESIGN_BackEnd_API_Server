@@ -10,7 +10,6 @@ import javax.validation.constraints.Min;
 @Builder
 public class CommentResponse {
     private long commentId;
-    private long itemId;
     private long promotionId;
     @Max(5)
     @Min(1)
