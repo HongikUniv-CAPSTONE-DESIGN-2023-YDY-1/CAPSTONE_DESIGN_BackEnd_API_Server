@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row" th:each="line:${map}">
+            <div class="card col-4" th:each="element:${line}">
+                <img src="" class="card-img-top" alt="..." th:src="'/image/'+${element.getImgUrl()}">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${element.getName()}"></h5>
+                    <p class="card-text" th:text="${element.getBrand()}"></p>
+                    <p class="card-text" th:text="${element.getPromotion()}"></p>
+                    <p class="card-text" th:text="${element.getPricePerUnit()}"></p>
+                    <p class="card-text" th:text="${#temporals.format(element.getStartDate(), 'yyyy.MM.dd')}"></p>
+                    <p class="card-text" th:text="${#temporals.format(element.getEndDate(), 'yyyy.MM.dd')}"></p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
+</html>

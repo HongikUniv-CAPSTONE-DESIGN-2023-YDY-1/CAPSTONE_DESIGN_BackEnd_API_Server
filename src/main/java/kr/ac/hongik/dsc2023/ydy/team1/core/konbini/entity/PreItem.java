@@ -18,7 +18,6 @@ public class PreItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "VARBINARY(255)")
     private String name;
     private String imgURL;
 
