@@ -1,24 +1,18 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core;
 
 
-import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.request.ItemsCreateRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.JoinRequest;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.KonbiniItemCreateRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.LoginRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.PasswordChangeRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.comment.CommentCreateRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.comment.CommentUpdateRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.comment.CommentResponse;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.KonbiniItemRepository;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service.CommentService;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service.KonbiniItemCreateService;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 

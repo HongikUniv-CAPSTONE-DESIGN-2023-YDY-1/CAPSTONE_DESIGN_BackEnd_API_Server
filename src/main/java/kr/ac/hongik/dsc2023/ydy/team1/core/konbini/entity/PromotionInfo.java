@@ -1,12 +1,8 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity;
 
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.KonbiniItemCreateRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniBrand;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniPromotion;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -15,6 +11,8 @@ import java.time.LocalDate;
 @Table(name = "promotion_info")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class PromotionInfo {
 
     @Id
@@ -41,21 +39,4 @@ public class PromotionInfo {
 
     @Column(name = "price", nullable = false)
     private int price;
-
-    @Builder
-    private PromotionInfo(Long id, Item item, KonbiniBrand brand, KonbiniPromotion promotion, LocalDate startDate, LocalDate endDate, int price) {
-        this.id = id;
-        this.item = item;
-        this.brand = brand;
-        this.promotion = promotion;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.price = price;
-    }
-    public void update(KonbiniItemCreateRequest dto){
-        promotion = dto.getPromotion();
-        startDate = LocalDate.now();
-        endDate = LocalDate.now();
-        price = dto.getPricePerUnit();
-    }
 }
