@@ -11,15 +11,18 @@
         <div class="row" th:each="line:${map}">
             <div class="card col-4" th:each="element:${line}">
                 <img src="" class="card-img-top" alt="..." th:src="'/image/'+${element.getImgUrl()}">
-                <div class="card-body">
+                <form class="card-body" method="post" action="/admin/create" >
                     <h5 class="card-title" th:text="${element.getName()}"></h5>
-                    <p class="card-text" th:text="${element.getBrand()}"></p>
-                    <p class="card-text" th:text="${element.getPromotion()}"></p>
-                    <p class="card-text" th:text="${element.getPricePerUnit()}"></p>
-                    <p class="card-text" th:text="${#temporals.format(element.getStartDate(), 'yyyy.MM.dd')}"></p>
-                    <p class="card-text" th:text="${#temporals.format(element.getEndDate(), 'yyyy.MM.dd')}"></p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
+                    <input class="card-text" th:value="${element.getBrand()}" name="brand">
+                    <input class="card-text" th:value="${element.getPromotion()}" name="promotion">
+                    <input class="card-text" th:value="${element.getPricePerUnit()}" name="pricePerUnit">
+                    <input class="card-text" th:value="${#temporals.format(element.getStartDate(), 'yyyy.MM.dd')}" name="startDate">
+                    <input class="card-text" th:value="${#temporals.format(element.getEndDate(), 'yyyy.MM.dd')}" name="endDate">
+                    <input class="visually-hidden" th:value="${element.getId()}" name="preId">
+                    <input class="visually-hidden" th:value="${element.getName()}" name="name">
+                    <input class="visually-hidden" th:value="${element.getImgUrl()}" name="imgName">
+                    <input type="submit" value="생성">
+                </form>
             </div>
         </div>
 

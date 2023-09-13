@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @Getter
 @ToString
 public class PreItemSearchResponse {
+    private long id;
     private String name;
     private KonbiniBrand brand;
     private KonbiniPromotion promotion;
@@ -22,6 +23,7 @@ public class PreItemSearchResponse {
 
     public static PreItemSearchResponse fromEntity(PreItem p){
         return PreItemSearchResponse.builder()
+                .id(p.getId())
                 .name(p.getName())
                 .brand(p.getBrand())
                 .endDate(p.getEndDate())

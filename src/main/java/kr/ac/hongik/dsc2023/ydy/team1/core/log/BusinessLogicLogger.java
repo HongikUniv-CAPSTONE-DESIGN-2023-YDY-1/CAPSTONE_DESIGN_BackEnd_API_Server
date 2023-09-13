@@ -60,6 +60,10 @@ public class BusinessLogicLogger {
         String requestId = (String) cachingRequest.getAttribute("requestId");
         String logType = "<<Request>>";
         ObjectMapper objectMapper = new ObjectMapper();
-        log.info("{} = {} {} {} = \n{}","RequestId",requestId,logType,"Body",objectMapper.readTree(cachingRequest.getContentAsByteArray()).toPrettyString());
+        try {
+            log.info("{} = {} {} {} = \n{}","RequestId",requestId,logType,"Body",objectMapper.readTree(cachingRequest.getContentAsByteArray()).toPrettyString());
+        }catch (Exception e){
+            log.info("{} = {} {} {} = \n{}","RequestId",requestId,logType,"Body"," ");
+        }
     }
 }
