@@ -12,15 +12,28 @@
             <div class="card col-4" th:each="element:${line}">
                 <img src="" class="card-img-top" alt="..." th:src="'/image/'+${element.getImgUrl()}">
                 <form class="card-body" method="post" action="/admin/create" >
-                    <h5 class="card-title" th:text="${element.getName()}"></h5>
-                    <input class="card-text" th:value="${element.getBrand()}" name="brand">
-                    <input class="card-text" th:value="${element.getPromotion()}" name="promotion">
-                    <input class="card-text" th:value="${element.getPricePerUnit()}" name="pricePerUnit">
-                    <input class="card-text" th:value="${#temporals.format(element.getStartDate(), 'yyyy.MM.dd')}" name="startDate">
-                    <input class="card-text" th:value="${#temporals.format(element.getEndDate(), 'yyyy.MM.dd')}" name="endDate">
-                    <input class="visually-hidden" th:value="${element.getId()}" name="preId">
-                    <input class="visually-hidden" th:value="${element.getName()}" name="name">
+                    <label class="form-label">제품명</label>
+                    <input class="form-control card-text" th:value="${element.getName()}" name="name">
+
                     <input class="visually-hidden" th:value="${element.getImgUrl()}" name="imgName">
+
+                    <label class="form-label">브랜드</label>
+                    <input class="form-control card-text" th:value="${element.getBrand()}" name="brand">
+
+                    <label class="form-label">행사 종류</label>
+                    <input class="form-control card-text" th:value="${element.getPromotion()}" name="promotion">
+
+                    <label class="form-label">개당 가격</label>
+                    <input class="form-control card-text" th:value="${element.getPricePerUnit()}" name="pricePerUnit">
+
+                    <label class="form-label">행사 시작일</label>
+                    <input class="form-control card-text" th:value="${#temporals.format(element.getStartDate(), 'yyyy.MM.dd')}" name="startDate">
+
+                    <label class="form-label">행사 종료 </label>
+                    <input class="form-control card-text" th:value="${#temporals.format(element.getEndDate(), 'yyyy.MM.dd')}" name="endDate">
+
+                    <input class="visually-hidden" th:value="${element.getId()}" name="preId">
+
                     <input type="submit" value="생성">
                 </form>
             </div>
