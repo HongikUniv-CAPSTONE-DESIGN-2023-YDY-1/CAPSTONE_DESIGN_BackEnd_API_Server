@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row" th:each="line:${map}">
+            <div class="card col-4" th:each="element:${line}">
+                <img src="" class="card-img-top" alt="..." th:src="'/image/'+${element.getImgUrl()}">
+                <form class="card-body" method="post" action="/admin/create" >
+                    <label class="form-label">제품명</label>
+                    <input class="form-control card-text" th:value="${element.getName()}" name="name">
+
+                    <input class="visually-hidden" th:value="${element.getImgUrl()}" name="imgName">
+
+                    <label class="form-label">브랜드</label>
+                    <input class="form-control card-text" th:value="${element.getBrand()}" name="brand">
+
+                    <label class="form-label">행사 종류</label>
+                    <input class="form-control card-text" th:value="${element.getPromotion()}" name="promotion">
+
+                    <label class="form-label">개당 가격</label>
+                    <input class="form-control card-text" th:value="${element.getPricePerUnit()}" name="pricePerUnit">
+
+                    <label class="form-label">행사 시작일</label>
+                    <input class="form-control card-text" th:value="${#temporals.format(element.getStartDate(), 'yyyy.MM.dd')}" name="startDate">
+
+                    <label class="form-label">행사 종료 </label>
+                    <input class="form-control card-text" th:value="${#temporals.format(element.getEndDate(), 'yyyy.MM.dd')}" name="endDate">
+
+                    <input class="visually-hidden" th:value="${element.getId()}" name="preId">
+
+                    <input type="submit" value="생성">
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
+</html>
