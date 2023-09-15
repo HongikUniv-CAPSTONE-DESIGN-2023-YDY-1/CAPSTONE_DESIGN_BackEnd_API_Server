@@ -1,5 +1,6 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity;
 
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.ItemCategory;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,11 @@ public class Item {
     private String name;
     @Column(name = "img_url", nullable = false)
     private String imgUrl;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ItemCategory category;
+
+    private String subCategory;
 
     public Item(String name,String imgUrl) {
         this.name = name;
