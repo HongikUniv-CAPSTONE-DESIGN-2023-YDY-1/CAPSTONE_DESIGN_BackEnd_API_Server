@@ -26,8 +26,9 @@ public class Item {
 
     private String subCategory;
 
-    public Item(String name,String imgUrl) {
+    public Item(String name,String imgUrl, ItemCategory category) {
         this.name = name;
         this.imgUrl = imgUrl;
+        this.category = category;
     }
 }

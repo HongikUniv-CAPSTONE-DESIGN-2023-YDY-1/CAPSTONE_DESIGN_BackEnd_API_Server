@@ -1,5 +1,6 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request;
 
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.ItemCategory;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniBrand;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniPromotion;
 import lombok.*;
@@ -17,5 +18,6 @@ public class ItemCreateRequest {
     private int pricePerUnit;
     private LocalDate startDate;
     private LocalDate endDate;
+    private ItemCategory category;
     private long preId;
 }
