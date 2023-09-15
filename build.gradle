@@ -38,6 +38,9 @@ dependencies {
 
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// jpa json 타입
+	implementation 'io.hypersistence:hypersistence-utils-hibernate-55:3.5.2'
 }
 
 tasks.named('test') {
