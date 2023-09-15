@@ -1,7 +1,9 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model;
 
-import java.util.Arrays;
+import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+@RequiredArgsConstructor
 public enum ItemCategory {
     BEVERAGE("음료"),
     SNACK("과자류"),
@@ -10,10 +12,6 @@ public enum ItemCategory {
     HOUSEHOLD("생활용품");
 
     private final String label;
-
-    ItemCategory(String label) {
-        this.label = label;
-    }
 
     public String getLabel() {
         return label;
