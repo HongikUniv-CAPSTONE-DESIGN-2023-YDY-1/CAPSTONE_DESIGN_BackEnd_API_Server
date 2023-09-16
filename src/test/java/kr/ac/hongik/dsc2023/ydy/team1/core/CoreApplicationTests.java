@@ -6,6 +6,7 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.LoginRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.PasswordChangeRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.comment.CommentCreateRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.comment.CommentUpdateRequest;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.JoinResponse;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.comment.CommentResponse;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service.CommentService;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service.MemberService;
@@ -63,7 +64,7 @@ class CoreApplicationTests {
     public void commentServiceTest(){
         memberService.join(JoinRequest.getInstance());
         CommentResponse created = commentService.create(CommentCreateRequest.getInstance(), 2);
-        CommentResponse searched = commentService.readAllByPromotionID(created.getPromotionId(), 0, 10)
+        CommentResponse searched = commentService.readAllByPromotionID(2, created.getPromotionId(), 0, 10)
                 .get().findFirst().orElseThrow();
         Assertions.assertEquals(created.getCommentId(),searched.getCommentId());
 
@@ -76,7 +77,7 @@ class CoreApplicationTests {
         searched = commentService.readAllByUserID(2,0,10).get().findFirst().get();
         Assertions.assertEquals(CommentUpdateRequest.getInstance().getContent(),searched.getContent());
 
-        CommentResponse searched2 = commentService.readAllByItemID(1,0,10).get().findFirst().get();
+        CommentResponse searched2 = commentService.readAllByPromotionID(2,1,0,10).get().findFirst().get();
 
         Assertions.assertEquals(searched.getCommentId(),searched2.getCommentId());
 

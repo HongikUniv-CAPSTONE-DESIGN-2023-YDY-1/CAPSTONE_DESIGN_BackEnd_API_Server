@@ -2,6 +2,7 @@ package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service;
 
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.comment.CommentCreateRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.comment.CommentUpdateRequest;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.event.PersonalizeEvent;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.comment.CommentResponse;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.Comment;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.Member;
@@ -10,15 +11,14 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.CommentRepository;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.KonbiniPromotionInfoRepository;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
-import java.util.function.Supplier;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +26,15 @@ public class SimpleCommentService implements CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final KonbiniPromotionInfoRepository promotionInfoRepository;
+    private final ApplicationEventPublisher eventPublisher;
     @Transactional
     @Override
     public CommentResponse create(CommentCreateRequest commentCreateRequest, int userID) {
         Comment comment = makeComment(commentCreateRequest, userID);
         validatePromotionIsOnGoing(comment.getPromotionInfo());
         commentRepository.saveAndFlush(comment);
+        PersonalizeEvent personalizeEvent = PersonalizeEvent.makeCommentWrite(userID,commentCreateRequest.getPromotionId());
+        eventPublisher.publishEvent(personalizeEvent);
         return CommentResponse.fromEntity(comment);
     }
     private Comment makeComment(CommentCreateRequest request, int userID){
@@ -65,7 +68,9 @@ public class SimpleCommentService implements CommentService {
     }
     @Transactional
     @Override
-    public Page<CommentResponse> readAllByPromotionID(long promotionID, int page, int sizePerPage) {
+    public Page<CommentResponse> readAllByPromotionID(int userID, long promotionID, int page, int sizePerPage) {
+        PersonalizeEvent personalizeEvent = PersonalizeEvent.makeCommentRead(userID,promotionID);
+        eventPublisher.publishEvent(personalizeEvent);
         return commentRepository.getCommentsByPromotionInfo_Id(promotionID,PageRequest.of(page,sizePerPage)).map(CommentResponse::fromEntity);
     }
     @Transactional

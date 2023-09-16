@@ -9,7 +9,7 @@ public interface CommentService {
     CommentResponse create(CommentCreateRequest commentCreateRequest, int userID);
     Page<CommentResponse> readAllByItemID(long itemId, int page, int sizePerPage);
     Page<CommentResponse> readAllByUserID(int userId, int page, int sizePerPage);
-    Page<CommentResponse> readAllByPromotionID(long promotionID, int page, int sizePerPage);
+    Page<CommentResponse> readAllByPromotionID(int userID, long promotionID, int page, int sizePerPage);
     CommentResponse update(CommentUpdateRequest commentUpdateRequest, int userID);
     void delete(long commentID, int userID);
 }
