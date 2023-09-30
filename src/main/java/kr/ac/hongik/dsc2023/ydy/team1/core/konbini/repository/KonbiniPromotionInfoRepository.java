@@ -7,12 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface KonbiniPromotionInfoRepository extends JpaRepository<PromotionInfo,Long> {
-    List<PromotionInfo> findAllByItem_NameContains(String name);
+    List<PromotionInfo> findAllByItem_NameContainsAndStartDateGreaterThanEqualAndEndDateGreaterThanEqual(String name, LocalDate startDate, LocalDate endDate);
     Optional<PromotionInfo> findByItem_NameAndBrand(String itemName, KonbiniBrand brand);
     @Query(
             value = "(select * from promotion_info p join item i on p.item_id = i.id where category in (\n" +

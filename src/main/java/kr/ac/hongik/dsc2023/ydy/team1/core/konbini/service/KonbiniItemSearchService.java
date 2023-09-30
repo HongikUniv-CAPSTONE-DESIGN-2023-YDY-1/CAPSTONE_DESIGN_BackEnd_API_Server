@@ -20,16 +20,19 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 public class KonbiniItemSearchService<E extends SearchItem,T extends SearchItemRequest> implements ItemSearchService<E,T> {
     @Value("${ai.server-path}")
     private String AI_SERVER_PATH;
-    private KonbiniPromotionInfoRepository promotionInfoRepository;
+    private final KonbiniPromotionInfoRepository promotionInfoRepository;
 
     public KonbiniItemSearchService(KonbiniPromotionInfoRepository promotionInfoRepository) {
         this.promotionInfoRepository = promotionInfoRepository;
@@ -41,12 +44,10 @@ public class KonbiniItemSearchService<E extends SearchItem,T extends SearchItemR
         return searchFromRepository(itemName);
     }
     private KonbiniSearchItemResponse<E> searchFromRepository(String itemName){
-        List<PromotionInfo> promotionInfos = promotionInfoRepository.findAllByItem_NameContains(itemName);
-        List<E> searchItems = new ArrayList<>();
-        for (PromotionInfo promotionInfo : promotionInfos) {
-            E konbiniSearchItem = (E) new KonbiniSearchItem(promotionInfo);
-            searchItems.add(konbiniSearchItem);
-        }
+        List<PromotionInfo> promotionInfos = promotionInfoRepository.findAllByItem_NameContainsAndStartDateGreaterThanEqualAndEndDateGreaterThanEqual(itemName, LocalDate.now(), LocalDate.now());
+        List<E> searchItems = promotionInfos.stream()
+                .map(promotionInfo -> (E) new KonbiniSearchItem(promotionInfo))
+                .collect(Collectors.toList());
         return KonbiniSearchItemResponse.<E>builder().searchItems(searchItems).build();
     }
 

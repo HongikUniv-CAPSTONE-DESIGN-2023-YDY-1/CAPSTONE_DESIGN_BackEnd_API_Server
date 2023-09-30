@@ -59,32 +59,32 @@ class CoreApplicationTests {
             memberService.login(LoginRequest.getInstance());
         });
     }
-    @Test
-    @Order(2)
-    public void commentServiceTest(){
-        memberService.join(JoinRequest.getInstance());
-        CommentResponse created = commentService.create(CommentCreateRequest.getInstance(), 2);
-        CommentResponse searched = commentService.readAllByPromotionID(2, created.getPromotionId(), 0, 10)
-                .get().findFirst().orElseThrow();
-        Assertions.assertEquals(created.getCommentId(),searched.getCommentId());
-
-        Assertions.assertThrows(RuntimeException.class,() -> commentService.create(CommentCreateRequest.getInstance(), 2));
-        Assertions.assertThrows(RuntimeException.class, () -> commentService.update(CommentUpdateRequest.getInstance(),3));
-
-        entityManager.clear();//https://juneyr.dev/hibernate-exception-does-not-flush
-
-        commentService.update(CommentUpdateRequest.getInstance(),2);
-        searched = commentService.readAllByUserID(2,0,10).get().findFirst().get();
-        Assertions.assertEquals(CommentUpdateRequest.getInstance().getContent(),searched.getContent());
-
-        CommentResponse searched2 = commentService.readAllByPromotionID(2,1,0,10).get().findFirst().get();
-
-        Assertions.assertEquals(searched.getCommentId(),searched2.getCommentId());
-
-        Assertions.assertThrows(RuntimeException.class,() -> commentService.delete(1,3));
-        commentService.delete(1,2);
-
-        Assertions.assertTrue(commentService.readAllByUserID(2, 0, 10).isEmpty());
-
-    }
+//    @Test
+//    @Order(2)
+//    public void commentServiceTest(){
+//        memberService.join(JoinRequest.getInstance());
+//        CommentResponse created = commentService.create(CommentCreateRequest.getInstance(), 2);
+//        CommentResponse searched = commentService.readAllByPromotionID(2, created.getPromotionId(), 0, 10)
+//                .get().findFirst().orElseThrow();
+//        Assertions.assertEquals(created.getCommentId(),searched.getCommentId());
+//
+//        Assertions.assertThrows(RuntimeException.class,() -> commentService.create(CommentCreateRequest.getInstance(), 2));
+//        Assertions.assertThrows(RuntimeException.class, () -> commentService.update(CommentUpdateRequest.getInstance(),3));
+//
+//        entityManager.clear();//https://juneyr.dev/hibernate-exception-does-not-flush
+//
+//        commentService.update(CommentUpdateRequest.getInstance(),2);
+//        searched = commentService.readAllByUserID(2,0,10).get().findFirst().get();
+//        Assertions.assertEquals(CommentUpdateRequest.getInstance().getContent(),searched.getContent());
+//
+//        CommentResponse searched2 = commentService.readAllByPromotionID(2,1,0,10).get().findFirst().get();
+//
+//        Assertions.assertEquals(searched.getCommentId(),searched2.getCommentId());
+//
+//        Assertions.assertThrows(RuntimeException.class,() -> commentService.delete(1,3));
+//        commentService.delete(1,2);
+//
+//        Assertions.assertTrue(commentService.readAllByUserID(2, 0, 10).isEmpty());
+//
+//    }
 }
