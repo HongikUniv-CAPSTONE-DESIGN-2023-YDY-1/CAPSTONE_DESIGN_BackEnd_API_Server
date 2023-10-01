@@ -87,7 +87,7 @@ public class SimpleMemberService implements MemberService {
         MemberProfile memberProfile = memberProfileRepository.findByMember_Id(memberID).orElse(null);
         boolean personalizeDataExists = memberProfile != null;
         if(!personalizeDataExists){
-            List<KonbiniSearchItem> searchItems = promotionInfoRepository.findAllByItem_NameContains("")
+            List<KonbiniSearchItem> searchItems = promotionInfoRepository.findByPersonalizeData(memberID)
                     .stream()
                     .map(KonbiniSearchItem::new)
                     .collect(Collectors.toList());
