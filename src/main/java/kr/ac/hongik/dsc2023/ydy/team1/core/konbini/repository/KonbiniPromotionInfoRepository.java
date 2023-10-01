@@ -19,15 +19,15 @@ public interface KonbiniPromotionInfoRepository extends JpaRepository<PromotionI
             value = "(select * from promotion_info p join item i on p.item_id = i.id where category in (\n" +
                     "select tmp.key_name from(SELECT key_name\n" +
                     "FROM (\n" +
-                    "  SELECT 'BEVERAGE' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.BEVERAGE')) AS key_value FROM member_profile where member_id=1\n" +
+                    "  SELECT 'BEVERAGE' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.BEVERAGE')) AS key_value FROM member_profile where member_id=:memberId\n" +
                     "  UNION ALL\n" +
-                    "  SELECT 'SNACK' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.SNACK')) AS key_value FROM member_profile where member_id=1\n" +
+                    "  SELECT 'SNACK' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.SNACK')) AS key_value FROM member_profile where member_id=:memberId\n" +
                     "  UNION ALL\n" +
-                    "  SELECT 'FOOD' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.FOOD')) AS key_value FROM member_profile where member_id=1\n" +
+                    "  SELECT 'FOOD' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.FOOD')) AS key_value FROM member_profile where member_id=:memberId\n" +
                     "  UNION ALL\n" +
-                    "  SELECT 'ICE_CREAM' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.ICE_CREAM')) AS key_value FROM member_profile where member_id=1\n" +
+                    "  SELECT 'ICE_CREAM' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.ICE_CREAM')) AS key_value FROM member_profile where member_id=:memberId\n" +
                     "  UNION ALL\n" +
-                    "  SELECT 'HOUSEHOLD' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.HOUSEHOLD')) AS key_value FROM member_profile where member_id=1\n" +
+                    "  SELECT 'HOUSEHOLD' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.HOUSEHOLD')) AS key_value FROM member_profile where member_id=:memberId\n" +
                     ") AS key_data\n" +
                     "GROUP BY key_name\n" +
                     "ORDER BY MAX(CONVERT(key_value, SIGNED)) DESC\n" +
@@ -38,15 +38,15 @@ public interface KonbiniPromotionInfoRepository extends JpaRepository<PromotionI
                     "(select * from promotion_info p join item i on p.item_id = i.id where category in (\n" +
                     "select tmp.key_name from(SELECT key_name\n" +
                     "FROM (\n" +
-                    "  SELECT 'BEVERAGE' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.BEVERAGE')) AS key_value FROM member_profile where member_id=1\n" +
+                    "  SELECT 'BEVERAGE' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.BEVERAGE')) AS key_value FROM member_profile where member_id=:memberId\n" +
                     "  UNION ALL\n" +
-                    "  SELECT 'SNACK' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.SNACK')) AS key_value FROM member_profile where member_id=1\n" +
+                    "  SELECT 'SNACK' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.SNACK')) AS key_value FROM member_profile where member_id=:memberId\n" +
                     "  UNION ALL\n" +
-                    "  SELECT 'FOOD' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.FOOD')) AS key_value FROM member_profile where member_id=1\n" +
+                    "  SELECT 'FOOD' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.FOOD')) AS key_value FROM member_profile where member_id=:memberId\n" +
                     "  UNION ALL\n" +
-                    "  SELECT 'ICE_CREAM' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.ICE_CREAM')) AS key_value FROM member_profile where member_id=1\n" +
+                    "  SELECT 'ICE_CREAM' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.ICE_CREAM')) AS key_value FROM member_profile where member_id=:memberId\n" +
                     "  UNION ALL\n" +
-                    "  SELECT 'HOUSEHOLD' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.HOUSEHOLD')) AS key_value FROM member_profile where member_id=1\n" +
+                    "  SELECT 'HOUSEHOLD' AS key_name, JSON_UNQUOTE(JSON_EXTRACT(recommend_data, '$.HOUSEHOLD')) AS key_value FROM member_profile where member_id=:memberId\n" +
                     ") AS key_data\n" +
                     "GROUP BY key_name\n" +
                     "ORDER BY MAX(CONVERT(key_value, SIGNED)) DESC\n" +
@@ -55,5 +55,15 @@ public interface KonbiniPromotionInfoRepository extends JpaRepository<PromotionI
                     "limit 2)\n",
             nativeQuery = true
     )
-    List<PromotionInfo> findByPersonalizeData(@Param("memberId")int memberID);
+    List<PromotionInfo> findByCategoryBasedPersonalizeData(@Param("memberId")int memberID);
+    //Todo 쿼리 변경
+    @Query(nativeQuery = true, value = "select * from promotion_info where start_date = :startDate and end_date = :endDate or (id = :memberID or id != :memberID)")
+    List<PromotionInfo> findBySubCategoryBasedPersonalizeData(@Param("memberID") int memberID,
+                                                              @Param("startDate") LocalDate startDate,
+                                                              @Param("endDate") LocalDate endDate);
+    //Todo 쿼리 변경
+    @Query(nativeQuery = true, value = "select * from promotion_info where start_date = :startDate and end_date = :endDate or (id = :memberID or id != :memberID)")
+    List<PromotionInfo> findByRecentAccessBasedPersonalizeData(@Param("memberID") int memberID,
+                                                               @Param("startDate") LocalDate startDate,
+                                                               @Param("endDate") LocalDate endDate);
 }

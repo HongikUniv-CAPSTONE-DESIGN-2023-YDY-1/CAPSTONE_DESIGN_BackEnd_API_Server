@@ -1,6 +1,7 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.PersonalizeAlg;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.TypeDef;
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @Entity
 @TypeDef(name = "json",typeClass = JsonType.class)
@@ -24,10 +26,16 @@ public class MemberProfile {
     @Type(type = "json")
     @Column(columnDefinition = "longtext")
     private Map<String,Object> recommendData;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Getter
+    private PersonalizeAlg personalizeAlg;
 
     public MemberProfile(Member member){
         this.member = member;
         this.recommendData = new HashMap<>();
+        int random = new Random().nextInt(1000)%3;
+        this.personalizeAlg = PersonalizeAlg.values()[random];
     }
 
     public void update(Map<String,Object> recommendData){
@@ -42,41 +50,6 @@ public class MemberProfile {
         return member;
     }
 
-    /**
-     * 다음과 같은 포맷의 json임.
-     * <pre>
-     * {
-     *   "BEVERAGE": 5,
-     *   "SNACK": 3,
-     *   "FOOD": 4,
-     *   "ICE_CREAM": 2,
-     *   "HOUSEHOLD": 1,
-     *   "recent_items": [
-     *     {
-     *       "item_name": "커피",
-     *       "access_time": "2023-09-17 10:30:00"
-     *     },
-     *     {
-     *       "item_name": "과자",
-     *       "access_time": "2023-09-16 15:45:00"
-     *     },
-     *     {
-     *       "item_name": "라면",
-     *       "access_time": "2023-09-15 18:20:00"
-     *     },
-     *     {
-     *       "item_name": "아이스크림",
-     *       "access_time": "2023-09-14 09:00:00"
-     *     },
-     *     {
-     *       "item_name": "세제",
-     *       "access_time": "2023-09-13 14:10:00"
-     *     }
-     *   ]
-     * }
-     * </pre>
-     * @return 위 json에 대응되는 Map 객체.
-     */
     public Map<String, Object> getRecommendData() {
         return recommendData;
     }
