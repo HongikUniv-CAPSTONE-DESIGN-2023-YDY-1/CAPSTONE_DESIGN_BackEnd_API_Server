@@ -35,9 +35,10 @@ public class SimpleMemberService implements MemberService {
     public JoinResponse join(JoinRequest joinRequest) {
         validateEmail(joinRequest.getEmail());
         Member member = joinRequest.toEntity();
-        member = memberRepository.saveAndFlush(member);
-        String accessToken = JWTMaker.makeToken(member.getId(), false);
-        String refreshToken = JWTMaker.makeToken(member.getId(), true);
+        MemberProfile memberProfile = new MemberProfile(member);
+        memberProfile = memberProfileRepository.saveAndFlush(memberProfile);
+        String accessToken = JWTMaker.makeToken(memberProfile.getMember().getId(), false);
+        String refreshToken = JWTMaker.makeToken(memberProfile.getMember().getId(), true);
         return new JoinResponse(accessToken, refreshToken);
     }
 
