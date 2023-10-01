@@ -12,6 +12,7 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.ItemData;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.KonbiniPromotionInfoRepository;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.MemberProfileRepository;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.MemberRepository;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service.PersonalizeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -26,12 +27,13 @@ import static kr.ac.hongik.dsc2023.ydy.team1.core.konbini.event.PersonalizeEvent
 
 @Component
 @RequiredArgsConstructor
-public class PersonalizeEventHandler {
+public class PersonalizeEventHandler implements PersonalizeService {
     private final MemberRepository memberRepository;
     private final KonbiniPromotionInfoRepository promotionInfoRepository;
     private final MemberProfileRepository memberProfileRepository;
     @Transactional
     @EventListener
+    @Override
     public void recommend(PersonalizeEvent personalizeEvent) {
         int memberID = personalizeEvent.getMemberID();
         long promotionID = personalizeEvent.getPromotionID();
