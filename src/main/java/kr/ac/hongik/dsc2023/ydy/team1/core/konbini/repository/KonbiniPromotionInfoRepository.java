@@ -57,12 +57,12 @@ public interface KonbiniPromotionInfoRepository extends JpaRepository<PromotionI
     )
     List<PromotionInfo> findByCategoryBasedPersonalizeData(@Param("memberId")int memberID);
     //Todo 쿼리 변경
-    @Query(nativeQuery = true, value = "select * from promotion_info where start_date = :startDate and end_date = :endDate or (id = :memberID or id != :memberID)")
+    @Query(nativeQuery = true, value = "select * from promotion_info where start_date = :startDate and end_date = :endDate or (id = :memberID or id != :memberID) limit 5")
     List<PromotionInfo> findBySubCategoryBasedPersonalizeData(@Param("memberID") int memberID,
                                                               @Param("startDate") LocalDate startDate,
                                                               @Param("endDate") LocalDate endDate);
     //Todo 쿼리 변경
-    @Query(nativeQuery = true, value = "select * from promotion_info where start_date = :startDate and end_date = :endDate or (id = :memberID or id != :memberID)")
+    @Query(nativeQuery = true, value = "select * from promotion_info where start_date = :startDate and end_date = :endDate or (id = :memberID or id != :memberID) limit 5")
     List<PromotionInfo> findByRecentAccessBasedPersonalizeData(@Param("memberID") int memberID,
                                                                @Param("startDate") LocalDate startDate,
                                                                @Param("endDate") LocalDate endDate);
