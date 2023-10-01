@@ -4,8 +4,11 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.ItemCategory;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Table(name = "item")
@@ -24,7 +27,9 @@ public class Item {
     @Column(nullable = false)
     private ItemCategory category;
 
-    private String subCategory;
+    @Type(type = "json")
+    @Column(columnDefinition = "longtext")
+    private Map<String,Object> subCategory = new HashMap<>();
 
     public Item(String name,String imgUrl, ItemCategory category) {
         this.name = name;
