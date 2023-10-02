@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -100,7 +100,7 @@ public class SimpleMemberService implements MemberService {
             return makeRecommendResult(searchItems, "맞춤 추천 데이터로 조회");
         }
         if (personalizeAlg == PersonalizeAlg.SUB_CATEGORY_BASE) {
-            List<KonbiniSearchItem> searchItems = getSubCategoryBasedList(memberID);
+            List<KonbiniSearchItem> searchItems = getSubCategoryBasedList(memberProfile);
             return makeRecommendResult(searchItems, "맞춤 추천 데이터로 조회");
         }
         if (personalizeAlg == PersonalizeAlg.RECENT_ACCESS_BASE) {
@@ -124,8 +124,28 @@ public class SimpleMemberService implements MemberService {
                 .collect(Collectors.toList());
     }
 
-    private List<KonbiniSearchItem> getSubCategoryBasedList(int memberID) {
-        return promotionInfoRepository.findBySubCategoryBasedPersonalizeData(memberID, LocalDate.now(), LocalDate.now())
+    private List<KonbiniSearchItem> getSubCategoryBasedList(MemberProfile memberProfile) {
+        Map<String, Object> recommendData = memberProfile.getRecommendData();
+        List<String> categoryWithSub = new ArrayList<>(recommendData.keySet());
+        categoryWithSub = categoryWithSub.stream()
+                .filter(s -> !s.contentEquals("recent_items"))
+                .sorted(Comparator.comparingInt(o -> (int) recommendData.get(o)))
+                .limit(2)
+                .map(s -> "$."+s.split("-")[1])
+                .collect(Collectors.toList());
+
+        if(categoryWithSub.isEmpty()){
+            return promotionInfoRepository.findAllByItem_NameContainsAndStartDateGreaterThanEqualAndEndDateGreaterThanEqual("",LocalDate.now(),LocalDate.now())
+                    .stream()
+                    .map(KonbiniSearchItem::new)
+                    .collect(Collectors.toList());
+        }
+
+        if (categoryWithSub.size() == 1){
+            categoryWithSub.add(categoryWithSub.get(0));
+        }
+
+        return promotionInfoRepository.findBySubCategoryBasedPersonalizeData(categoryWithSub.get(0), categoryWithSub.get(1), LocalDate.now().minusDays(1), LocalDate.now().minusDays(1))
                 .stream()
                 .map(KonbiniSearchItem::new)
                 .collect(Collectors.toList());

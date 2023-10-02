@@ -33,7 +33,7 @@ public interface KonbiniPromotionInfoRepository extends JpaRepository<PromotionI
                     "ORDER BY MAX(CONVERT(key_value, SIGNED)) DESC\n" +
                     "LIMIT 1\n" +
                     ") tmp)\n" +
-                    "limit 3)\n" +
+                    "limit 6)\n" +
                     "union all \n" +
                     "(select * from promotion_info p join item i on p.item_id = i.id where category in (\n" +
                     "select tmp.key_name from(SELECT key_name\n" +
@@ -52,13 +52,16 @@ public interface KonbiniPromotionInfoRepository extends JpaRepository<PromotionI
                     "ORDER BY MAX(CONVERT(key_value, SIGNED)) DESC\n" +
                     "LIMIT 1 offset 1\n" +
                     ") tmp)\n" +
-                    "limit 2)\n",
+                    "limit 4)\n",
             nativeQuery = true
     )
     List<PromotionInfo> findByCategoryBasedPersonalizeData(@Param("memberId")int memberID);
     //Todo 쿼리 변경
-    @Query(nativeQuery = true, value = "select * from promotion_info where start_date = :startDate and end_date = :endDate or (id = :memberID or id != :memberID) limit 5")
-    List<PromotionInfo> findBySubCategoryBasedPersonalizeData(@Param("memberID") int memberID,
+    @Query(nativeQuery = true, value = "select * from promotion_info p join item i on i.id = p.item_id " +
+            "where start_date = :startDate and end_date = :endDate " +
+            "and (JSON_EXISTS(sub_category, :sub1) = true or JSON_EXISTS(sub_category, :sub2) = true)limit 10")
+    List<PromotionInfo> findBySubCategoryBasedPersonalizeData(@Param("sub1") String sub1,
+                                                              @Param("sub2") String sub2,
                                                               @Param("startDate") LocalDate startDate,
                                                               @Param("endDate") LocalDate endDate);
     //Todo 쿼리 변경
