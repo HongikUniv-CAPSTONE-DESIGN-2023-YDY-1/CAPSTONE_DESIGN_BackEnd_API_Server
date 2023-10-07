@@ -14,9 +14,10 @@ import java.util.Objects;
 @AllArgsConstructor
 @Getter
 public class ItemData {
+    @JsonProperty("item_id")
+    private long itemID;
     @JsonProperty("item_name")
     private String itemName;
-
     @JsonProperty("access_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime accessTime;

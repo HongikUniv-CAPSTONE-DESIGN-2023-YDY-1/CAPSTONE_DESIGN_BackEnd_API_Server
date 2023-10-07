@@ -68,10 +68,10 @@ public abstract class AbstractPersonalizeService implements PersonalizeService {
      * @return 새로 생성된 개인화 기록. 입력의 복제본에 최근 기록이 업데이트 되어 반환된다.
      */
     protected Map<String,Object> updateRecentAccessInfo(final Map<String,Object> before, final Item item){
-        Set<Map<String,String>> tmp = new HashSet<>((List<Map<String,String>>)before.getOrDefault("recent_items",new ArrayList<>()));
-        Set<ItemData> recentItems = tmp.stream().map(map -> new ItemData(map.get("item_name"), LocalDateTime.parse(map.get("access_time").replace(" ","T"))))
+        Set<Map<String,Object>> tmp = new HashSet<>((List<Map<String,Object>>)before.getOrDefault("recent_items",new ArrayList<>()));
+        Set<ItemData> recentItems = tmp.stream().map(map -> new ItemData((int)map.get("item_id"),(String) map.get("item_name"), LocalDateTime.parse(((String)map.get("access_time")).replace(" ","T"))))
                 .collect(Collectors.toSet());
-        ItemData newData = new ItemData(item.getName(), LocalDateTime.now());
+        ItemData newData = new ItemData(item.getId(), item.getName(), LocalDateTime.now());
         recentItems.remove(newData);
         recentItems.add(newData);
         recentItems = recentItems.stream()

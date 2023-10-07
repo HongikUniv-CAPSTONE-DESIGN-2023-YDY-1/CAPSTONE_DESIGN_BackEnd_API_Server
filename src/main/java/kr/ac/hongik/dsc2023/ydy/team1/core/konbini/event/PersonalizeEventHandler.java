@@ -5,6 +5,7 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.PersonalizeAlg;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.MemberProfileRepository;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service.AbstractPersonalizeService;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service.CategoryBasedPersonalizeService;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service.RecentAccessBasedPersonalizeService;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service.SubCategoryBasedPersonalizeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -19,6 +20,7 @@ import static kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.PersonalizeAlg.*
 public class PersonalizeEventHandler{
     private final CategoryBasedPersonalizeService categoryBasedPersonalizeService;
     private final SubCategoryBasedPersonalizeService subCategoryBasedPersonalizeService;
+    private final RecentAccessBasedPersonalizeService recentAccessBasedPersonalizeService;
     private final MemberProfileRepository memberProfileRepository;
     @EventListener
     public void recommend(PersonalizeEvent personalizeEvent) {
@@ -30,6 +32,9 @@ public class PersonalizeEventHandler{
         }
         if (personalizeAlg == SUB_CATEGORY_BASE){
             subCategoryBasedPersonalizeService.recommend(personalizeEvent);
+        }
+        if (personalizeAlg == RECENT_ACCESS_BASE){
+            recentAccessBasedPersonalizeService.recommend(personalizeEvent);
         }
     }
 }

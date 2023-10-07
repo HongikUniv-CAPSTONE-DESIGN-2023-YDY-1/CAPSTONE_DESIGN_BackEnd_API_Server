@@ -1,13 +1,20 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.response.Response;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.JoinRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.LoginRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.PasswordChangeRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.*;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.Item;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.Member;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.MemberProfile;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.PromotionInfo;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.ItemCategory;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.ItemData;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.PersonalizeAlg;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.KonbiniItemRepository;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.KonbiniPromotionInfoRepository;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.MemberProfileRepository;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.MemberRepository;
@@ -18,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,6 +37,8 @@ public class SimpleMemberService implements MemberService {
     private final MemberRepository memberRepository;
     private final MemberProfileRepository memberProfileRepository;
     private final KonbiniPromotionInfoRepository promotionInfoRepository;
+    private final KonbiniItemRepository itemRepository;
+    private final ObjectMapper mapper;
 
     @Transactional
     @Override
@@ -104,7 +114,7 @@ public class SimpleMemberService implements MemberService {
             return makeRecommendResult(searchItems, "맞춤 추천 데이터로 조회");
         }
         if (personalizeAlg == PersonalizeAlg.RECENT_ACCESS_BASE) {
-            List<KonbiniSearchItem> searchItems = getRecentAccessBasedList(memberID);
+            List<KonbiniSearchItem> searchItems = getRecentAccessBasedList(memberProfile);
             return makeRecommendResult(searchItems, "맞춤 추천 데이터로 조회");
         }
         List<KonbiniSearchItem> searchItems = getBasicList();
@@ -151,9 +161,32 @@ public class SimpleMemberService implements MemberService {
                 .collect(Collectors.toList());
     }
 
-    private List<KonbiniSearchItem> getRecentAccessBasedList(int memberID){
-        return promotionInfoRepository.findByRecentAccessBasedPersonalizeData(memberID,LocalDate.now(),LocalDate.now())
-                .stream()
+    private List<KonbiniSearchItem> getRecentAccessBasedList(MemberProfile memberProfile){
+        Map<String, Object> recommendData = memberProfile.getRecommendData();
+        List<Map<String, Object>> tmp = (List<Map<String,Object>>)recommendData.getOrDefault("recent_items",new ArrayList<>());
+        int recentItemID = (int) tmp.get(0).get("item_id");
+        Item item = itemRepository.findById(Long.valueOf(recentItemID)).orElse(null);
+        if (item == null){
+            return getBasicList();
+        }
+        Set<String> recentItemsSubCategories = item.getSubCategory().keySet();
+
+        List<PromotionInfo> promotionInfosByCategory = promotionInfoRepository.findByItem_CategoryAndStartDateAndEndDate(item.getCategory(), LocalDate.now(), LocalDate.now());
+        return promotionInfosByCategory.parallelStream()
+                .filter(p -> !p.getItem().equals(item))
+                .filter(p -> {
+                    Item promotionItem = p.getItem();
+                    Set<String> subCategories = promotionItem.getSubCategory().keySet();
+                    return subCategories.stream().anyMatch(recentItemsSubCategories::contains);
+                })
+                .sorted((o1, o2) -> {
+                    Set<String> o1SubCategory = o1.getItem().getSubCategory().keySet();
+                    Set<String> o2SubCategory = o2.getItem().getSubCategory().keySet();
+                    long o1MatchingCount = o1SubCategory.stream().filter(recentItemsSubCategories::contains).count();
+                    long o2MatchingCount = o2SubCategory.stream().filter(recentItemsSubCategories::contains).count();
+                    return -Long.compare(o1MatchingCount, o2MatchingCount);
+                })
+                .limit(10)
                 .map(KonbiniSearchItem::new)
                 .collect(Collectors.toList());
     }

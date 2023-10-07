@@ -1,7 +1,9 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository;
 
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.PromotionInfo;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.ItemCategory;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.KonbiniBrand;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface KonbiniPromotionInfoRepository extends JpaRepository<PromotionInfo,Long> {
@@ -69,8 +72,14 @@ public interface KonbiniPromotionInfoRepository extends JpaRepository<PromotionI
                                                               @Param("startDate") LocalDate startDate,
                                                               @Param("endDate") LocalDate endDate);
     //Todo 쿼리 변경
-    @Query(nativeQuery = true, value = "select * from promotion_info where start_date = :startDate and end_date = :endDate or (id = :memberID or id != :memberID) limit 5")
-    List<PromotionInfo> findByRecentAccessBasedPersonalizeData(@Param("memberID") int memberID,
-                                                               @Param("startDate") LocalDate startDate,
-                                                               @Param("endDate") LocalDate endDate);
+    @Query(nativeQuery = true, value = "select * from promotion_info p join item i on i.id = p.item_id " +
+            "where start_date = :today and end_date = :today " +
+            "and category = :itemCategory " +
+            "and JSON_EXISTS(sub_category, :subCategory) limit 10")
+    List<PromotionInfo> findByRecentAccessBasedPersonalizeData(@Param("today") LocalDate today,
+                                                               @Param("itemCategory")ItemCategory itemCategory,
+                                                               @Param("subCategory") String subCategory);
+
+    @EntityGraph(attributePaths = {"item"})
+    List<PromotionInfo> findByItem_CategoryAndStartDateAndEndDate(ItemCategory itemCategory, LocalDate startDate, LocalDate endDate);
 }
