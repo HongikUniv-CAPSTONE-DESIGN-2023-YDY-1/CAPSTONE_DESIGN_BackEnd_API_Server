@@ -71,7 +71,7 @@ public class KonbiniItemSearchService<E extends SearchItem,T extends SearchItemR
         try {
             Map<String,String> aiResponse = objectMapper.readValue(response.getBody(), new TypeReference<Map<String, String>>() {});
             String name = new String(Base64.getDecoder().decode(aiResponse.get("item")));
-            name = name.split("_")[1];
+            name = name.split("_")[0];
             log.info(name);
             return name;
         } catch (JsonProcessingException e) {
