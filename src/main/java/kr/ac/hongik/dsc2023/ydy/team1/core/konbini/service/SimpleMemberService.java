@@ -1,6 +1,5 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.response.Response;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.JoinRequest;
@@ -11,8 +10,6 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.Item;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.Member;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.MemberProfile;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.PromotionInfo;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.ItemCategory;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.ItemData;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.PersonalizeAlg;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.KonbiniItemRepository;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.KonbiniPromotionInfoRepository;
@@ -39,6 +36,16 @@ public class SimpleMemberService implements MemberService {
     private final KonbiniPromotionInfoRepository promotionInfoRepository;
     private final KonbiniItemRepository itemRepository;
     private final ObjectMapper mapper;
+
+    private static int compareByAccessTime(Map<String, Object> o1, Map<String, Object> o2) {
+        String o1AccessTimeString = (String) o1.get("access_time");
+        o1AccessTimeString = o1AccessTimeString.replace(" ", "T");
+        LocalDateTime o1Time = LocalDateTime.parse(o1AccessTimeString);
+        String o2AccessTimeString = (String) o2.get("access_time");
+        o2AccessTimeString = o2AccessTimeString.replace(" ", "T");
+        LocalDateTime o2Time = LocalDateTime.parse(o2AccessTimeString);
+        return o2Time.compareTo(o1Time);
+    }
 
     @Transactional
     @Override
@@ -164,6 +171,11 @@ public class SimpleMemberService implements MemberService {
     private List<KonbiniSearchItem> getRecentAccessBasedList(MemberProfile memberProfile){
         Map<String, Object> recommendData = memberProfile.getRecommendData();
         List<Map<String, Object>> tmp = (List<Map<String,Object>>)recommendData.getOrDefault("recent_items",new ArrayList<>());
+        tmp = tmp.stream()
+                .sorted(SimpleMemberService::compareByAccessTime)
+                .limit(1)
+                .collect(Collectors.toList());
+
         int recentItemID = (int) tmp.get(0).get("item_id");
         Item item = itemRepository.findById(Long.valueOf(recentItemID)).orElse(null);
         if (item == null){
