@@ -4,14 +4,14 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.response.Response;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.JoinRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.LoginRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.PasswordChangeRequest;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.JoinResponse;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.KonbiniResponse;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.LoginResponse;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.PasswordChangeResponse;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.*;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service.MemberService;
+import kr.ac.hongik.dsc2023.ydy.team1.core.util.JWTMaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/member")
@@ -44,5 +44,12 @@ public class MemberController {
                 .message("비밀번호 변경 성공")
                 .build();
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/promotions/recommend")
+    public ResponseEntity<Response<List<KonbiniSearchItem>>> getPersonalizeRecommendList(@RequestHeader(name = "Authorization") String accessToken){
+        accessToken = accessToken.replace("Bearer ","");
+        int userID = JWTMaker.getUserID(accessToken);
+        return ResponseEntity.ok(memberService.getPersonalizeRecommendList(userID));
     }
 }

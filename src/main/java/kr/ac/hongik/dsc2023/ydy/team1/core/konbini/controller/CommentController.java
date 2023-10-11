@@ -45,13 +45,13 @@ public class CommentController {
                 .build();
         return ResponseEntity.ok(response);
     }
-    @GetMapping("/list/{itemID:[0-9]+}/{page:[0-9]+}")
-    public ResponseEntity<Response<Page<CommentResponse>>> getByItemID(@PathVariable long itemID,
+    @GetMapping("/list/{promotionID:[0-9]+}/{page:[0-9]+}")
+    public ResponseEntity<Response<Page<CommentResponse>>> getByPromotionID(@PathVariable long promotionID,
                                                                      @PathVariable int page,
                                                                      @RequestHeader(name = "Authorization") String accessToken){
         accessToken = accessToken.replace("Bearer ", "");
         int userID = JWTMaker.getUserID(accessToken);
-        var data = commentService.readAllByItemID(itemID,page-1, SIZE_PER_PAGE);
+        var data = commentService.readAllByPromotionID(userID,promotionID,page-1, SIZE_PER_PAGE);
         var response = KonbiniResponse.<Page<CommentResponse>>builder()
                 .data(data)
                 .message("리뷰 조회 성공")
