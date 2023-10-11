@@ -33,7 +33,11 @@ public final class JWTMaker {
     public static int getUserID(String token){
         JwtParser jwtParser = Jwts.parser();
         jwtParser.setSigningKey(secretKey);
-        Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
-        return (Integer) claimsJws.getBody().get("userID");
+        try {
+            Jws<Claims> claimsJws = jwtParser.parseClaimsJws(token);
+            return (Integer) claimsJws.getBody().get("userID");
+        }catch (Exception e){
+            throw new IllegalArgumentException("엑세스 토큰이 잘못되었습니다.");
+        }
     }
 }
