@@ -12,6 +12,7 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.KonbiniPromotionIn
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,11 @@ public class SimpleCommentService implements CommentService {
     public CommentResponse create(CommentCreateRequest commentCreateRequest, int userID) {
         Comment comment = makeComment(commentCreateRequest, userID);
         validatePromotionIsOnGoing(comment.getPromotionInfo());
-        commentRepository.saveAndFlush(comment);
+        try {
+            commentRepository.saveAndFlush(comment);
+        }catch (DataIntegrityViolationException e){
+            throw new IllegalStateException("이미 리뷰를 작성했습니다.");
+        }
         PersonalizeEvent personalizeEvent = PersonalizeEvent.makeCommentWrite(userID,commentCreateRequest.getPromotionId());
         eventPublisher.publishEvent(personalizeEvent);
         return CommentResponse.fromEntity(comment);
