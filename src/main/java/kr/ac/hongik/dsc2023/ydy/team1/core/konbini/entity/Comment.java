@@ -11,6 +11,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(
+        name="comment",
+        uniqueConstraints={
+                @UniqueConstraint(
+                        columnNames={"member_id", "promotion_id"}
+                )
+        }
+)
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +29,7 @@ public class Comment {
     private Member member;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "promotion_id", nullable = false, unique = true)
+    @JoinColumn(name = "promotion_id", nullable = false)
     private PromotionInfo promotionInfo;
 
     @Column(nullable = false)
