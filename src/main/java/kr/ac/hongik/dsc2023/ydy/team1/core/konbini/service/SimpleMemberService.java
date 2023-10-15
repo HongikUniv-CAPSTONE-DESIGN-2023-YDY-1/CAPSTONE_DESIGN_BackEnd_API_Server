@@ -182,25 +182,34 @@ public class SimpleMemberService implements MemberService {
             return getBasicList();
         }
         Set<String> recentItemsSubCategories = item.getSubCategory().keySet();
-
-        List<PromotionInfo> promotionInfosByCategory = promotionInfoRepository.findByItem_CategoryAndStartDateAndEndDate(item.getCategory(), LocalDate.now(), LocalDate.now());
-        return promotionInfosByCategory.parallelStream()
-                .filter(p -> !p.getItem().equals(item))
-                .filter(p -> {
-                    Item promotionItem = p.getItem();
-                    Set<String> subCategories = promotionItem.getSubCategory().keySet();
-                    return subCategories.stream().anyMatch(recentItemsSubCategories::contains);
-                })
-                .sorted((o1, o2) -> {
-                    Set<String> o1SubCategory = o1.getItem().getSubCategory().keySet();
-                    Set<String> o2SubCategory = o2.getItem().getSubCategory().keySet();
-                    long o1MatchingCount = o1SubCategory.stream().filter(recentItemsSubCategories::contains).count();
-                    long o2MatchingCount = o2SubCategory.stream().filter(recentItemsSubCategories::contains).count();
-                    return -Long.compare(o1MatchingCount, o2MatchingCount);
-                })
-                .limit(10)
+        List<KonbiniSearchItem> konbiniSearchItems = recentItemsSubCategories.stream()
+                .map(s -> promotionInfoRepository.findByRecentAccessBasedPersonalizeData(LocalDate.now(), item.getCategory().name(), "$."+s))
+                .flatMap(Collection::stream)
                 .map(KonbiniSearchItem::new)
                 .collect(Collectors.toList());
+        Collections.shuffle(konbiniSearchItems);
+        return konbiniSearchItems.stream()
+                .limit(10)
+                .collect(Collectors.toList());
+
+//        List<PromotionInfo> promotionInfosByCategory = promotionInfoRepository.findByItem_CategoryAndStartDateAndEndDate(item.getCategory(), LocalDate.now(), LocalDate.now());
+//        return promotionInfosByCategory.parallelStream()
+//                .filter(p -> !p.getItem().equals(item))
+//                .filter(p -> {
+//                    Item promotionItem = p.getItem();
+//                    Set<String> subCategories = promotionItem.getSubCategory().keySet();
+//                    return subCategories.stream().anyMatch(recentItemsSubCategories::contains);
+//                })
+//                .sorted((o1, o2) -> {
+//                    Set<String> o1SubCategory = o1.getItem().getSubCategory().keySet();
+//                    Set<String> o2SubCategory = o2.getItem().getSubCategory().keySet();
+//                    long o1MatchingCount = o1SubCategory.stream().filter(recentItemsSubCategories::contains).count();
+//                    long o2MatchingCount = o2SubCategory.stream().filter(recentItemsSubCategories::contains).count();
+//                    return -Long.compare(o1MatchingCount, o2MatchingCount);
+//                })
+//                .limit(10)
+//                .map(KonbiniSearchItem::new)
+//                .collect(Collectors.toList());
     }
 
     private static KonbiniResponse<List<KonbiniSearchItem>> makeRecommendResult(List<KonbiniSearchItem> searchItems, String message) {

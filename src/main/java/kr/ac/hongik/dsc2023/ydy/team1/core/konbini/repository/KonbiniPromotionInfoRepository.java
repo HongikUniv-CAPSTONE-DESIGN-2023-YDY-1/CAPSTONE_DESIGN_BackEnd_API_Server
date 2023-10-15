@@ -77,7 +77,7 @@ public interface KonbiniPromotionInfoRepository extends JpaRepository<PromotionI
             "and category = :itemCategory " +
             "and JSON_EXISTS(sub_category, :subCategory) limit 10")
     List<PromotionInfo> findByRecentAccessBasedPersonalizeData(@Param("today") LocalDate today,
-                                                               @Param("itemCategory")ItemCategory itemCategory,
+                                                               @Param("itemCategory")String itemCategory,
                                                                @Param("subCategory") String subCategory);
 
     @EntityGraph(attributePaths = {"item"})
