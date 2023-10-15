@@ -75,7 +75,7 @@ public interface KonbiniPromotionInfoRepository extends JpaRepository<PromotionI
     @Query(nativeQuery = true, value = "select * from promotion_info p join item i on i.id = p.item_id " +
             "where start_date = :today and end_date = :today " +
             "and category = :itemCategory " +
-            "and JSON_EXISTS(sub_category, :subCategory) limit 10")
+            "and JSON_EXISTS(sub_category, :subCategory) order by rand() limit 10")
     List<PromotionInfo> findByRecentAccessBasedPersonalizeData(@Param("today") LocalDate today,
                                                                @Param("itemCategory")String itemCategory,
                                                                @Param("subCategory") String subCategory);
