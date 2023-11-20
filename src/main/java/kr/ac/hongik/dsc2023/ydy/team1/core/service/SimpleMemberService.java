@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -17,13 +18,13 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.JoinRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.LoginRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.PasswordChangeRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.JoinResponse;
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.KonbiniSearchItem;
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.KonbiniSearchItems;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.LoginResponse;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.PasswordChangeResponse;
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.Response;
 import kr.ac.hongik.dsc2023.ydy.team1.core.entity.Item;
 import kr.ac.hongik.dsc2023.ydy.team1.core.entity.Member;
 import kr.ac.hongik.dsc2023.ydy.team1.core.entity.MemberProfile;
+import kr.ac.hongik.dsc2023.ydy.team1.core.entity.PromotionInfo;
 import kr.ac.hongik.dsc2023.ydy.team1.core.model.PersonalizeAlg;
 import kr.ac.hongik.dsc2023.ydy.team1.core.repository.KonbiniItemRepository;
 import kr.ac.hongik.dsc2023.ydy.team1.core.repository.KonbiniPromotionInfoRepository;
@@ -101,46 +102,35 @@ public class SimpleMemberService implements MemberService {
     }
 
     @Override
-    public Response<List<KonbiniSearchItem>> getPersonalizeRecommendList(int memberID) {
+    public KonbiniSearchItems getPersonalizeRecommendList(int memberID) {
         MemberProfile memberProfile = memberProfileRepository.findByMember_Id(memberID).orElse(null);
         boolean personalizeDataExists = memberProfile != null;
         if (!personalizeDataExists) {
-            List<KonbiniSearchItem> searchItems = getBasicList();
-            return makeRecommendResult(searchItems, "기본 추천 데이터로 조회");
+            return makeRecommendResult(this::getBasicList);
         }
         PersonalizeAlg personalizeAlg = memberProfile.getPersonalizeAlg();
         if (personalizeAlg == PersonalizeAlg.CATEGORY_BASE) {
-            List<KonbiniSearchItem> searchItems = getCategoryBasedList(memberID);
-            return makeRecommendResult(searchItems, "맞춤 추천 데이터로 조회");
+            return makeRecommendResult(() -> getCategoryBasedList(memberID));
         }
         if (personalizeAlg == PersonalizeAlg.SUB_CATEGORY_BASE) {
-            List<KonbiniSearchItem> searchItems = getSubCategoryBasedList(memberProfile);
-            return makeRecommendResult(searchItems, "맞춤 추천 데이터로 조회");
+            return makeRecommendResult(() -> getSubCategoryBasedList(memberProfile));
         }
         if (personalizeAlg == PersonalizeAlg.RECENT_ACCESS_BASE) {
-            List<KonbiniSearchItem> searchItems = getRecentAccessBasedList(memberProfile);
-            return makeRecommendResult(searchItems, "맞춤 추천 데이터로 조회");
+            return makeRecommendResult(() -> getRecentAccessBasedList(memberProfile));
         }
-        List<KonbiniSearchItem> searchItems = getBasicList();
-        return makeRecommendResult(searchItems, "기본 추천 데이터로 조회");
+        return makeRecommendResult(this::getBasicList);
     }
 
-    private List<KonbiniSearchItem> getBasicList() {
+    private List<PromotionInfo> getBasicList() {
         return promotionInfoRepository.findAllByItem_NameContainsAndStartDateGreaterThanEqualAndEndDateGreaterThanEqual(
-                        "", LocalDate.now(), LocalDate.now())
-                .stream()
-                .map(KonbiniSearchItem::new)
-                .collect(Collectors.toList());
+                "", LocalDate.now(), LocalDate.now());
     }
 
-    private List<KonbiniSearchItem> getCategoryBasedList(int memberID) {
-        return promotionInfoRepository.findByCategoryBasedPersonalizeData(memberID)
-                .stream()
-                .map(KonbiniSearchItem::new)
-                .collect(Collectors.toList());
+    private List<PromotionInfo> getCategoryBasedList(int memberID) {
+        return promotionInfoRepository.findByCategoryBasedPersonalizeData(memberID);
     }
 
-    private List<KonbiniSearchItem> getSubCategoryBasedList(MemberProfile memberProfile) {
+    private List<PromotionInfo> getSubCategoryBasedList(MemberProfile memberProfile) {
         Map<String, Object> recommendData = memberProfile.getRecommendData();
         List<String> categoryWithSub = new ArrayList<>(recommendData.keySet());
         categoryWithSub = categoryWithSub.stream()
@@ -152,10 +142,7 @@ public class SimpleMemberService implements MemberService {
 
         if (categoryWithSub.isEmpty()) {
             return promotionInfoRepository.findAllByItem_NameContainsAndStartDateGreaterThanEqualAndEndDateGreaterThanEqual(
-                            "", LocalDate.now(), LocalDate.now())
-                    .stream()
-                    .map(KonbiniSearchItem::new)
-                    .collect(Collectors.toList());
+                    "", LocalDate.now(), LocalDate.now());
         }
 
         if (categoryWithSub.size() == 1) {
@@ -163,13 +150,10 @@ public class SimpleMemberService implements MemberService {
         }
 
         return promotionInfoRepository.findBySubCategoryBasedPersonalizeData(categoryWithSub.get(0),
-                        categoryWithSub.get(1), LocalDate.now().minusDays(1), LocalDate.now().minusDays(1))
-                .stream()
-                .map(KonbiniSearchItem::new)
-                .collect(Collectors.toList());
+                categoryWithSub.get(1), LocalDate.now().minusDays(1), LocalDate.now().minusDays(1));
     }
 
-    private List<KonbiniSearchItem> getRecentAccessBasedList(MemberProfile memberProfile) {
+    private List<PromotionInfo> getRecentAccessBasedList(MemberProfile memberProfile) {
         Map<String, Object> recommendData = memberProfile.getRecommendData();
         List<Map<String, Object>> tmp = (List<Map<String, Object>>) recommendData.getOrDefault("recent_items",
                 new ArrayList<>());
@@ -184,35 +168,13 @@ public class SimpleMemberService implements MemberService {
             return getBasicList();
         }
         Set<String> recentItemsSubCategories = item.getSubCategory().keySet();
-        List<KonbiniSearchItem> konbiniSearchItems = recentItemsSubCategories.stream()
+        List<PromotionInfo> promotionInfos = recentItemsSubCategories.stream()
                 .map(s -> promotionInfoRepository.findByRecentAccessBasedPersonalizeData(LocalDate.now(),
                         item.getCategory().name(), "$." + s))
                 .flatMap(Collection::stream)
-                .map(KonbiniSearchItem::new)
                 .collect(Collectors.toList());
-        Collections.shuffle(konbiniSearchItems);
-        return konbiniSearchItems.stream()
-                .limit(10)
-                .collect(Collectors.toList());
-
-//        List<PromotionInfo> promotionInfosByCategory = promotionInfoRepository.findByItem_CategoryAndStartDateAndEndDate(item.getCategory(), LocalDate.now(), LocalDate.now());
-//        return promotionInfosByCategory.parallelStream()
-//                .filter(p -> !p.getItem().equals(item))
-//                .filter(p -> {
-//                    Item promotionItem = p.getItem();
-//                    Set<String> subCategories = promotionItem.getSubCategory().keySet();
-//                    return subCategories.stream().anyMatch(recentItemsSubCategories::contains);
-//                })
-//                .sorted((o1, o2) -> {
-//                    Set<String> o1SubCategory = o1.getItem().getSubCategory().keySet();
-//                    Set<String> o2SubCategory = o2.getItem().getSubCategory().keySet();
-//                    long o1MatchingCount = o1SubCategory.stream().filter(recentItemsSubCategories::contains).count();
-//                    long o2MatchingCount = o2SubCategory.stream().filter(recentItemsSubCategories::contains).count();
-//                    return -Long.compare(o1MatchingCount, o2MatchingCount);
-//                })
-//                .limit(10)
-//                .map(KonbiniSearchItem::new)
-//                .collect(Collectors.toList());
+        Collections.shuffle(promotionInfos);
+        return promotionInfos;
     }
 
     private static int compareByAccessTime(Map<String, Object> o1, Map<String, Object> o2) {
@@ -225,11 +187,7 @@ public class SimpleMemberService implements MemberService {
         return o2Time.compareTo(o1Time);
     }
 
-    private static Response<List<KonbiniSearchItem>> makeRecommendResult(List<KonbiniSearchItem> searchItems,
-                                                                         String message) {
-        return Response.<List<KonbiniSearchItem>>builder()
-                .data(searchItems)
-                .message(message)
-                .build();
+    private static KonbiniSearchItems makeRecommendResult(Supplier<List<PromotionInfo>> supplier) {
+        return new KonbiniSearchItems(supplier.get());
     }
 }

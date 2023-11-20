@@ -6,6 +6,7 @@ import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.LoginRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.PasswordChangeRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.JoinResponse;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.KonbiniSearchItem;
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.KonbiniSearchItems;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.LoginResponse;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.PasswordChangeResponse;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.Response;
@@ -63,6 +64,11 @@ public class MemberController {
             @RequestHeader(name = "Authorization") String accessToken) {
         accessToken = accessToken.replace("Bearer ", "");
         int userID = JWTMaker.getUserID(accessToken);
-        return ResponseEntity.ok(memberService.getPersonalizeRecommendList(userID));
+        KonbiniSearchItems personalizeRecommends = memberService.getPersonalizeRecommendList(userID);
+        Response<List<KonbiniSearchItem>> response = Response.<List<KonbiniSearchItem>>builder()
+                .data(personalizeRecommends.getSearchItems())
+                .message("맞춤 추천 데이터로 조회")
+                .build();
+        return ResponseEntity.ok(response);
     }
 }
