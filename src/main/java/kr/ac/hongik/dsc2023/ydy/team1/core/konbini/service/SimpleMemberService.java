@@ -1,15 +1,29 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.response.Response;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.JoinRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.LoginRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.PasswordChangeRequest;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.*;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.JoinResponse;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.KonbiniSearchItem;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.LoginResponse;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.PasswordChangeResponse;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.Item;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.Member;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.MemberProfile;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.entity.PromotionInfo;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.model.PersonalizeAlg;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.KonbiniItemRepository;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.repository.KonbiniPromotionInfoRepository;
@@ -21,13 +35,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class SimpleMemberService implements MemberService {
@@ -36,16 +43,6 @@ public class SimpleMemberService implements MemberService {
     private final KonbiniPromotionInfoRepository promotionInfoRepository;
     private final KonbiniItemRepository itemRepository;
     private final ObjectMapper mapper;
-
-    private static int compareByAccessTime(Map<String, Object> o1, Map<String, Object> o2) {
-        String o1AccessTimeString = (String) o1.get("access_time");
-        o1AccessTimeString = o1AccessTimeString.replace(" ", "T");
-        LocalDateTime o1Time = LocalDateTime.parse(o1AccessTimeString);
-        String o2AccessTimeString = (String) o2.get("access_time");
-        o2AccessTimeString = o2AccessTimeString.replace(" ", "T");
-        LocalDateTime o2Time = LocalDateTime.parse(o2AccessTimeString);
-        return o2Time.compareTo(o1Time);
-    }
 
     @Transactional
     @Override
@@ -127,8 +124,10 @@ public class SimpleMemberService implements MemberService {
         List<KonbiniSearchItem> searchItems = getBasicList();
         return makeRecommendResult(searchItems, "기본 추천 데이터로 조회");
     }
-    private List<KonbiniSearchItem> getBasicList(){
-        return promotionInfoRepository.findAllByItem_NameContainsAndStartDateGreaterThanEqualAndEndDateGreaterThanEqual("", LocalDate.now(), LocalDate.now())
+
+    private List<KonbiniSearchItem> getBasicList() {
+        return promotionInfoRepository.findAllByItem_NameContainsAndStartDateGreaterThanEqualAndEndDateGreaterThanEqual(
+                        "", LocalDate.now(), LocalDate.now())
                 .stream()
                 .map(KonbiniSearchItem::new)
                 .collect(Collectors.toList());
@@ -148,29 +147,32 @@ public class SimpleMemberService implements MemberService {
                 .filter(s -> !s.contentEquals("recent_items"))
                 .sorted(Comparator.comparingInt(o -> (int) recommendData.get(o)))
                 .limit(2)
-                .map(s -> "$."+s.split("-")[1])
+                .map(s -> "$." + s.split("-")[1])
                 .collect(Collectors.toList());
 
-        if(categoryWithSub.isEmpty()){
-            return promotionInfoRepository.findAllByItem_NameContainsAndStartDateGreaterThanEqualAndEndDateGreaterThanEqual("",LocalDate.now(),LocalDate.now())
+        if (categoryWithSub.isEmpty()) {
+            return promotionInfoRepository.findAllByItem_NameContainsAndStartDateGreaterThanEqualAndEndDateGreaterThanEqual(
+                            "", LocalDate.now(), LocalDate.now())
                     .stream()
                     .map(KonbiniSearchItem::new)
                     .collect(Collectors.toList());
         }
 
-        if (categoryWithSub.size() == 1){
+        if (categoryWithSub.size() == 1) {
             categoryWithSub.add(categoryWithSub.get(0));
         }
 
-        return promotionInfoRepository.findBySubCategoryBasedPersonalizeData(categoryWithSub.get(0), categoryWithSub.get(1), LocalDate.now().minusDays(1), LocalDate.now().minusDays(1))
+        return promotionInfoRepository.findBySubCategoryBasedPersonalizeData(categoryWithSub.get(0),
+                        categoryWithSub.get(1), LocalDate.now().minusDays(1), LocalDate.now().minusDays(1))
                 .stream()
                 .map(KonbiniSearchItem::new)
                 .collect(Collectors.toList());
     }
 
-    private List<KonbiniSearchItem> getRecentAccessBasedList(MemberProfile memberProfile){
+    private List<KonbiniSearchItem> getRecentAccessBasedList(MemberProfile memberProfile) {
         Map<String, Object> recommendData = memberProfile.getRecommendData();
-        List<Map<String, Object>> tmp = (List<Map<String,Object>>)recommendData.getOrDefault("recent_items",new ArrayList<>());
+        List<Map<String, Object>> tmp = (List<Map<String, Object>>) recommendData.getOrDefault("recent_items",
+                new ArrayList<>());
         tmp = tmp.stream()
                 .sorted(SimpleMemberService::compareByAccessTime)
                 .limit(1)
@@ -178,12 +180,13 @@ public class SimpleMemberService implements MemberService {
 
         int recentItemID = (int) tmp.get(0).get("item_id");
         Item item = itemRepository.findById(Long.valueOf(recentItemID)).orElse(null);
-        if (item == null){
+        if (item == null) {
             return getBasicList();
         }
         Set<String> recentItemsSubCategories = item.getSubCategory().keySet();
         List<KonbiniSearchItem> konbiniSearchItems = recentItemsSubCategories.stream()
-                .map(s -> promotionInfoRepository.findByRecentAccessBasedPersonalizeData(LocalDate.now(), item.getCategory().name(), "$."+s))
+                .map(s -> promotionInfoRepository.findByRecentAccessBasedPersonalizeData(LocalDate.now(),
+                        item.getCategory().name(), "$." + s))
                 .flatMap(Collection::stream)
                 .map(KonbiniSearchItem::new)
                 .collect(Collectors.toList());
@@ -212,8 +215,19 @@ public class SimpleMemberService implements MemberService {
 //                .collect(Collectors.toList());
     }
 
-    private static KonbiniResponse<List<KonbiniSearchItem>> makeRecommendResult(List<KonbiniSearchItem> searchItems, String message) {
-        return KonbiniResponse.<List<KonbiniSearchItem>>builder()
+    private static int compareByAccessTime(Map<String, Object> o1, Map<String, Object> o2) {
+        String o1AccessTimeString = (String) o1.get("access_time");
+        o1AccessTimeString = o1AccessTimeString.replace(" ", "T");
+        LocalDateTime o1Time = LocalDateTime.parse(o1AccessTimeString);
+        String o2AccessTimeString = (String) o2.get("access_time");
+        o2AccessTimeString = o2AccessTimeString.replace(" ", "T");
+        LocalDateTime o2Time = LocalDateTime.parse(o2AccessTimeString);
+        return o2Time.compareTo(o1Time);
+    }
+
+    private static Response<List<KonbiniSearchItem>> makeRecommendResult(List<KonbiniSearchItem> searchItems,
+                                                                         String message) {
+        return Response.<List<KonbiniSearchItem>>builder()
                 .data(searchItems)
                 .message(message)
                 .build();
