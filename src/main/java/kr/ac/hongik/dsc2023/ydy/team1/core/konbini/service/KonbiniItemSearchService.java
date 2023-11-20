@@ -8,7 +8,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.response.SearchItemResponse;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.KonbiniSearchItemRequest;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.KonbiniSearchItem;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.KonbiniSearchItemResponse;
@@ -38,21 +37,21 @@ public class KonbiniItemSearchService {
         this.promotionInfoRepository = promotionInfoRepository;
     }
 
-    public SearchItemResponse<KonbiniSearchItem> search(KonbiniSearchItemRequest requestDTO) {
+    public KonbiniSearchItemResponse search(KonbiniSearchItemRequest requestDTO) {
         String itemName = requestDTO.getName();
         return searchFromRepository(itemName);
     }
 
-    private KonbiniSearchItemResponse<KonbiniSearchItem> searchFromRepository(String itemName) {
+    private KonbiniSearchItemResponse searchFromRepository(String itemName) {
         List<PromotionInfo> promotionInfos = promotionInfoRepository.findAllByItem_NameContainsAndStartDateGreaterThanEqualAndEndDateGreaterThanEqual(
                 itemName, LocalDate.now(), LocalDate.now());
         List<KonbiniSearchItem> searchItems = promotionInfos.stream()
                 .map(KonbiniSearchItem::new)
                 .collect(Collectors.toList());
-        return KonbiniSearchItemResponse.<KonbiniSearchItem>builder().searchItems(searchItems).build();
+        return KonbiniSearchItemResponse.builder().searchItems(searchItems).build();
     }
 
-    public SearchItemResponse<KonbiniSearchItem> searchByImage(MultipartFile img) {
+    public KonbiniSearchItemResponse searchByImage(MultipartFile img) {
         String itemName = requestToAIModule(img);
         return searchFromRepository(itemName);
     }

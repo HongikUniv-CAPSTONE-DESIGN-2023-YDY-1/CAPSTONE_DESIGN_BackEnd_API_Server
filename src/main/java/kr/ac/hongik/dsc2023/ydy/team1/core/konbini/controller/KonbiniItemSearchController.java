@@ -1,9 +1,8 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.konbini.controller;
 
 import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.response.Response;
-import kr.ac.hongik.dsc2023.ydy.team1.core.architecture.dto.response.SearchItemResponse;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.request.KonbiniSearchItemRequest;
-import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.KonbiniSearchItem;
+import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.dto.response.KonbiniSearchItemResponse;
 import kr.ac.hongik.dsc2023.ydy.team1.core.konbini.service.KonbiniItemSearchService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +20,11 @@ public class KonbiniItemSearchController {
     private final KonbiniItemSearchService itemSearchService;
 
     @GetMapping("")
-    public ResponseEntity<Response<SearchItemResponse<KonbiniSearchItem>>> search(KonbiniSearchItemRequest requestDTO) {
+    public ResponseEntity<Response<KonbiniSearchItemResponse>> search(
+            KonbiniSearchItemRequest requestDTO) {
         System.out.println(requestDTO);
         var result = itemSearchService.search(requestDTO);
-        Response<SearchItemResponse<KonbiniSearchItem>> wrapper = Response.<SearchItemResponse<KonbiniSearchItem>>builder()
+        Response<KonbiniSearchItemResponse> wrapper = Response.<KonbiniSearchItemResponse>builder()
                 .data(result)
                 .message("검색에 성공했습니다")
                 .build();
@@ -32,10 +32,10 @@ public class KonbiniItemSearchController {
     }
 
     @PostMapping("/image")
-    public ResponseEntity<Response<SearchItemResponse<KonbiniSearchItem>>> searchByImage(
+    public ResponseEntity<Response<KonbiniSearchItemResponse>> searchByImage(
             @RequestPart MultipartFile img) {
         var result = itemSearchService.searchByImage(img);
-        Response<SearchItemResponse<KonbiniSearchItem>> wrapper = Response.<SearchItemResponse<KonbiniSearchItem>>builder()
+        Response<KonbiniSearchItemResponse> wrapper = Response.<KonbiniSearchItemResponse>builder()
                 .data(result)
                 .message("검색에 성공했습니다")
                 .build();
