@@ -3,21 +3,17 @@ package kr.ac.hongik.dsc2023.ydy.team1.core.dto.response;
 import kr.ac.hongik.dsc2023.ydy.team1.core.entity.PromotionInfo;
 import kr.ac.hongik.dsc2023.ydy.team1.core.model.KonbiniBrand;
 import kr.ac.hongik.dsc2023.ydy.team1.core.model.KonbiniPromotion;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 
-@Builder
 @Getter
-@ToString
 public class KonbiniSearchItem {
-    private long id;
-    private String name;
-    private String imgUrl;
-    private KonbiniBrand brand;
-    private KonbiniPromotion promotion;
-    private int pricePerUnit; // 개당 가격
-    private int pricePerGroup; // 할인 단위당 가격
+    private final long id;
+    private final String name;
+    private final String imgUrl;
+    private final KonbiniBrand brand;
+    private final KonbiniPromotion promotion;
+    private final int pricePerUnit; // 개당 가격
+    private final int pricePerGroup; // 할인 단위당 가격
 
     public KonbiniSearchItem(PromotionInfo promotionInfo) {
         super();

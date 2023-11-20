@@ -1,7 +1,7 @@
 package kr.ac.hongik.dsc2023.ydy.team1.core.controller;
 
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.KonbiniSearchItemRequest;
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.KonbiniSearchItemResponse;
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.KonbiniSearchItems;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.Response;
 import kr.ac.hongik.dsc2023.ydy.team1.core.service.KonbiniItemSearchService;
 import lombok.AllArgsConstructor;
@@ -20,11 +20,11 @@ public class KonbiniItemSearchController {
     private final KonbiniItemSearchService itemSearchService;
 
     @GetMapping("")
-    public ResponseEntity<Response<KonbiniSearchItemResponse>> search(
+    public ResponseEntity<Response<KonbiniSearchItems>> search(
             KonbiniSearchItemRequest requestDTO) {
         System.out.println(requestDTO);
         var result = itemSearchService.search(requestDTO);
-        Response<KonbiniSearchItemResponse> wrapper = Response.<KonbiniSearchItemResponse>builder()
+        Response<KonbiniSearchItems> wrapper = Response.<KonbiniSearchItems>builder()
                 .data(result)
                 .message("검색에 성공했습니다")
                 .build();
@@ -32,10 +32,10 @@ public class KonbiniItemSearchController {
     }
 
     @PostMapping("/image")
-    public ResponseEntity<Response<KonbiniSearchItemResponse>> searchByImage(
+    public ResponseEntity<Response<KonbiniSearchItems>> searchByImage(
             @RequestPart MultipartFile img) {
         var result = itemSearchService.searchByImage(img);
-        Response<KonbiniSearchItemResponse> wrapper = Response.<KonbiniSearchItemResponse>builder()
+        Response<KonbiniSearchItems> wrapper = Response.<KonbiniSearchItems>builder()
                 .data(result)
                 .message("검색에 성공했습니다")
                 .build();

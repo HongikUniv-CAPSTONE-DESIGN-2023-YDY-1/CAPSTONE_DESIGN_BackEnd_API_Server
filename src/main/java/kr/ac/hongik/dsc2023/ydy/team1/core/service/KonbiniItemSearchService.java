@@ -7,10 +7,8 @@ import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import kr.ac.hongik.dsc2023.ydy.team1.core.dto.request.KonbiniSearchItemRequest;
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.KonbiniSearchItem;
-import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.KonbiniSearchItemResponse;
+import kr.ac.hongik.dsc2023.ydy.team1.core.dto.response.KonbiniSearchItems;
 import kr.ac.hongik.dsc2023.ydy.team1.core.entity.PromotionInfo;
 import kr.ac.hongik.dsc2023.ydy.team1.core.repository.KonbiniPromotionInfoRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -37,21 +35,18 @@ public class KonbiniItemSearchService {
         this.promotionInfoRepository = promotionInfoRepository;
     }
 
-    public KonbiniSearchItemResponse search(KonbiniSearchItemRequest requestDTO) {
+    public KonbiniSearchItems search(KonbiniSearchItemRequest requestDTO) {
         String itemName = requestDTO.getName();
         return searchFromRepository(itemName);
     }
 
-    private KonbiniSearchItemResponse searchFromRepository(String itemName) {
+    private KonbiniSearchItems searchFromRepository(String itemName) {
         List<PromotionInfo> promotionInfos = promotionInfoRepository.findAllByItem_NameContainsAndStartDateGreaterThanEqualAndEndDateGreaterThanEqual(
                 itemName, LocalDate.now(), LocalDate.now());
-        List<KonbiniSearchItem> searchItems = promotionInfos.stream()
-                .map(KonbiniSearchItem::new)
-                .collect(Collectors.toList());
-        return KonbiniSearchItemResponse.builder().searchItems(searchItems).build();
+        return new KonbiniSearchItems(promotionInfos);
     }
 
-    public KonbiniSearchItemResponse searchByImage(MultipartFile img) {
+    public KonbiniSearchItems searchByImage(MultipartFile img) {
         String itemName = requestToAIModule(img);
         return searchFromRepository(itemName);
     }
